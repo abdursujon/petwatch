@@ -1,0 +1,102 @@
+</section>
+</div>
+</div>
+</main>
+
+<footer class="modern-footer">
+    <div class="container mt-5">
+
+        <!-- Main Footer Content -->
+        <div class="footer-content">
+            <div class="row">
+
+                <!-- Demo about Section -->
+                <div class="col-md-4 footer-section">
+                    <div class="footer-logo">
+                        <img src="/images/logo.png" alt="Pet Watch Logo">
+                        <span class="footer-logo-text">Pet Watch</span>
+                    </div>
+                    <p class="footer-description">
+                        Helping reunite lost pets with their
+                        loving families. Join our community of caring pet owners
+                        and help make a difference today.
+                    </p>
+                    <!-- Demo social links-->
+                    <div class="footer-social">
+                        <a href="#" class="social-icon" title="Facebook">
+                            <i class="fab fa-facebook-f">f</i>
+                        </a>
+                        <a href="#" class="social-icon" title="Twitter">
+                            <i class="fab fa-twitter">t</i>
+                        </a>
+                        <a href="#" class="social-icon" title="Instagram">
+                            <i class="fab fa-instagram">i</i>
+                        </a>
+                        <a href="#" class="social-icon" title="Email">
+                            <i class="fas fa-envelope">@</i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Links to different pages -->
+                <div class="col-md-4 footer-section">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.php">Home</a></li>
+                        <li><a href="viewSightings.php">View Sightings</a></li>
+                        <li><a href="createSightings.php">Create Sighting</a></li>
+                        <!--Show mypet.php page link only if the role is owner and
+                         logged in-->
+                        <?php
+                        if (isset($_SESSION['loggedin']) && $_SESSION['loggedin']
+                         === true && isset($_SESSION['role'])
+                          && $_SESSION['role'] === 'Owner'):
+                            ?>
+                            <li><a class="nav-link"
+                            href="mypet.php">Add & Manage Pets</a></li>
+                        <?php endif; ?>
+                        <li><a href="login.php">Login</a></li>
+                    </ul>
+                </div>
+
+                <!-- Demo Contact Info -->
+                <div class="col-md-4 footer-section">
+                    <h3 class="footer-title">Contact Us</h3>
+                    <div class="footer-contact-info">
+                        <strong>Email:</strong> support@petwatch.com
+                    </div>
+                    <div class="footer-contact-info">
+                        <strong>Phone:</strong> +44 161 295 5000
+                    </div>
+                    <div class="footer-contact-info">
+                        <strong>Address:</strong><br>
+                        University of Salford<br>
+                        Manchester, UK
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Demo Footer lega section -->
+        <div class="footer-bottom">
+            <p class="footer-copyright">© 2025 Pet Watch. All rights reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+        </div>
+
+    </div>
+</footer>
+
+<!-- Bootstrap core JavaScript-->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+crossorigin="anonymous">
+</script>
+
+</body>
+</html>

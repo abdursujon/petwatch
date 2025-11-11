@@ -1,0 +1,230 @@
+<?php require_once('Views/template/header.phtml'); ?>
+
+<!--If creating a sightings is successful show succesMessage,
+otherwise show error message-->
+<div class="row justify-content-center mt-5">
+ <div class="col-12 col-md-6">
+  <?php if (!empty($view->successMessage)): ?>
+   <div class="alert alert-success text-center">
+    <?= htmlspecialchars($view->successMessage) ?>
+   </div>
+  <?php elseif (!empty($view->errorMessage)): ?>
+   <div class="alert alert-danger text-center">
+    <?= htmlspecialchars($view->errorMessage) ?>
+   </div>
+  <?php endif; ?>
+ </div>
+</div>
+
+<!--Report a new sightings container-->
+<div class="container my-5">
+ <div class="row justify-content-center pt-5">
+  <div class="col-12 col-md-6 shadow-lg p-4 mb-5 bg-white rounded">
+   <h2 class="mb-4">Report a New Sighting</h2>
+
+   <!-- Determine which pet id the user selected.
+        Using this, we will display the image of the chosen pet when selected.
+        This demonstrates how to efficiently retrieve and display data from DB. -->
+   <?php
+   $selectedPet = null;
+   $selectedPetId = $view->selectedPetId ?? null;
+
+   // If user selected a pet, show that pet
+   if (!empty($selectedPetId) && !empty($view->pets)) {
+    foreach ($view->pets as $pet) {
+     if ((int)$pet['id'] === (int)$selectedPetId) {
+      $selectedPet = $pet;
+      break;
+     }
+    }
+   }
+   ?>
+
+   <!-- Create sightings form -->
+   <form action="/createSightings.php" method="post">
+
+    <div class="mb-3">
+     <label for="pet_id" class="form-label">Missing Pets</label>
+     <!--Each time user selects a pet, submit to update displayed image-->
+     <select name="pet_id" id="pet_id" class="form-select"
+             required onchange="this.form.submit()">
+      <option value="" disabled <?= $selectedPetId ? '' : 'selected' ?>>
+       --Choose a pet--
+      </option>
+      <!--Loop through all pets-->
+      <?php foreach ($view->pets as $pet): ?>
+       <option value="<?= htmlspecialchars($pet['id']) ?>"
+               <?= ($selectedPetId == $pet['id']) ? 'selected' : '' ?>>
+        <?= htmlspecialchars($pet['name']) ?>
+        (<?= htmlspecialchars($pet['species']) ?>)
+       </option>
+      <?php endforeach; ?>
+     </select>
+    </div>
+
+    <!--Show selected pet image-->
+    <?php if ($selectedPet && !empty($selectedPet['photo_url'])): ?>
+     <div class="mb-3 text-left">
+      <img src="<?= htmlspecialchars($selectedPet['photo_url']) ?>"
+           alt="Pet photo" class="img-fluid rounded shadow-sm"
+           style="max-width:300px;">
+     </div>
+    <?php endif; ?>
+
+    <!--Post sightings comment-->
+    <div class="mb-3">
+     <label for="comment" class="form-label">Comment</label>
+     <textarea name="comment" id="comment" class="form-control text-left"
+               rows="2" placeholder="Briefly describe the pet conditions">
+      <?= htmlspecialchars($_POST['comment'] ?? '') ?>
+     </textarea>
+    </div>
+
+    <div class="mb-3">
+     <label class="form-label fw-bold">Enter lat/lng where you saw the pet.</label>
+     <div class="row">
+
+      <!--Latitude-->
+      <div class="col-6">
+       <label for="latitude" class="form-label">Latitude</label>
+       <input type="number" step="any" name="latitude" id="latitude"
+              class="form-control" placeholder="Latitude"
+              value="<?= htmlspecialchars($_POST['latitude'] ?? '') ?>"
+              required>
+      </div>
+
+      <!--Longitude-->
+      <div class="col-6">
+       <label for="longitude" class="form-label">Longitude</label>
+       <input type="number" step="any" name="longitude" id="longitude"
+              class="form-control" placeholder="Longitude"
+              value="<?= htmlspecialchars($_POST['longitude'] ?? '') ?>"
+              required>
+      </div>
+     </div>
+    </div>
+
+    <!--Submit-->
+    <div class="d-grid">
+     <button type="submit" name="submit_sighting" class="btn btn-primary">
+      Submit Sighting
+     </button>
+    </div>
+   </form>
+  </div>
+ </div>
+
+ <!-- Update and delete sightings when logged in -->
+ <div class="container pb-5 mb-5 mt-5">
+  <div class="row">
+   <div class="col-lg-10 mx-auto">
+    <div class="card shadow-sm border-0 bg-light rounded-3">
+     <div class="card-body p-4">
+      <h2 class="text-center mb-5 display-6 text-primary fw-semibold">
+       Manage My Sightings
+      </h2>
+
+      <?php if (!empty($view->sightings)): ?>
+       <form action="/createSightings.php" method="post">
+        <div class="row mx-2 gy-4">
+         <?php foreach ($view->sightings as $sighting): ?>
+          <?php $sightingId = $sighting['id']; ?>
+          <div class="col-12">
+           <div class="card shadow-sm border-0 bg-white rounded-3">
+            <div class="card-body px-3 py-4">
+
+             <!--Pet name and species-->
+             <h4 class="card-title mb-3 border-bottom pb-2 fw-semibold text-primary">
+              <?= htmlspecialchars($sighting['pet_name']) ?>
+              <small class="text-muted">
+               (<?= htmlspecialchars($sighting['species']) ?>)
+              </small>
+             </h4>
+
+             <!--Pet image-->
+             <?php if (!empty($sighting['photo_url'])): ?>
+              <div class="mb-3 text-left">
+               <img src="<?= htmlspecialchars($sighting['photo_url']) ?>"
+                    alt="Pet photo" class="img-fluid rounded shadow-sm">
+              </div>
+             <?php endif; ?>
+
+             <div class="row g-3">
+
+              <!--Comment-->
+              <div class="col-md-12">
+               <label class="form-label small text-muted">Comment</label>
+               <textarea name="sightings[<?= $sightingId ?>][comment]"
+                         class="form-control shadow-sm" rows="2">
+                <?= htmlspecialchars($sighting['comment'] ?? '') ?>
+               </textarea>
+              </div>
+
+              <!--Latitude-->
+              <div class="col-md-6 col-lg-3">
+               <label class="form-label small text-muted">Latitude</label>
+               <input type="text"
+                      name="sightings[<?= $sightingId ?>][latitude]"
+                      value="<?= htmlspecialchars($sighting['latitude']) ?>"
+                      class="form-control shadow-sm">
+              </div>
+
+              <!--Longitude-->
+              <div class="col-md-6 col-lg-3">
+               <label class="form-label small text-muted">Longitude</label>
+               <input type="text"
+                      name="sightings[<?= $sightingId ?>][longitude]"
+                      value="<?= htmlspecialchars($sighting['longitude']) ?>"
+                      class="form-control shadow-sm">
+              </div>
+
+              <!--Timestamp-->
+              <div class="col-md-6 col-lg-4">
+               <label class="form-label small text-muted">Recorded at</label>
+               <input type="text" class="form-control shadow-sm"
+                      value="<?= htmlspecialchars($sighting['timestamp']) ?>"
+                      readonly>
+              </div>
+             </div>
+
+             <div class="row g-3 mt-4">
+
+              <!--Update-->
+              <div class="col-md-6 col-lg-4">
+               <button type="submit" name="update_sighting"
+                       value="<?= $sightingId ?>"
+                       class="btn btn-success w-100 fw-bold shadow-sm">
+                <i class="bi bi-pencil-square"></i> Update
+               </button>
+              </div>
+
+              <!--Delete-->
+              <div class="col-md-6 col-lg-4">
+               <button type="submit" name="delete_sighting"
+                       value="<?= $sightingId ?>"
+                       class="btn btn-outline-danger w-100 fw-bold shadow-sm">
+                <i class="bi bi-trash"></i> Delete
+               </button>
+              </div>
+             </div>
+
+            </div>
+           </div>
+          </div>
+         <?php endforeach; ?>
+        </div>
+       </form>
+      <?php else: ?>
+       <!--If user has no sightings-->
+       <div class="alert alert-info text-center fw-semibold shadow-sm">
+        You have not recorded any sightings yet.
+       </div>
+      <?php endif; ?>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<?php require_once('Views/template/footer.phtml'); ?>

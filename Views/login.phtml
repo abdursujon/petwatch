@@ -1,0 +1,128 @@
+<?php
+// Include the header view
+require('Views/template/header.phtml');
+?>
+
+<!--Check if a user is logged in-->
+<?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
+
+ <!-- Logged In: Show Welcome Message with logout button -->
+ <div class="container mt-5" style="min-height: 70vh">
+  <div class="row">
+   <div class="col-md-8 offset-md-2">
+    <div class="welcome-card">
+
+     <!--Show the user login succes message-->
+     <?php if (!empty($view->successMessage)): ?>
+      <div class="alert alert-success mb-4">
+       <?= htmlspecialchars($view->successMessage) ?>
+      </div>
+     <?php endif; ?>
+
+     <!--Logged in success, welcome the user by their name -->
+     <h2 class="welcome-title">
+      Welcome back, <?= htmlspecialchars($_SESSION['username']) ?>!
+     </h2>
+     <p class="welcome-subtitle">
+      You are successfully logged in to Pet Watch.
+     </p>
+
+     <!--Show some page buttons links so user can navigate-->
+     <div class="quick-links">
+      <a href="/index.php" class="quick-link-btn">Go to Home</a>
+      <a href="/viewSightings.php" class="quick-link-btn">View Sightings</a>
+      <a href="/mypet.php" class="quick-link-btn">My Pets</a>
+     </div>
+
+     <hr class="my-4">
+     <a href="/login.php?action=logout" class="btn btn-danger logout-btn">
+      Logout
+     </a>
+
+    </div>
+   </div>
+  </div>
+ </div>
+
+<!-- Not Logged In: Show Login Form -->
+<?php else: ?>
+
+ <div class="container login-form">
+  <div class="row">
+   <div class="col-lg-6 mx-auto">
+    <div class="login-card">
+     <h4 class="login-title">Sign In</h4>
+
+     <!-- Show general error message -->
+     <?php if (!empty($view->errorMessage)): ?>
+      <div class="alert alert-warning text-center shadow-sm mb-4">
+       <?= htmlspecialchars($view->errorMessage) ?>
+      </div>
+     <?php endif; ?>
+
+     <!--Show the success message if login is successful-->
+     <?php if (!empty($view->successMessage)): ?>
+      <div class="alert alert-success text-center">
+       <?= htmlspecialchars($view->successMessage) ?>
+      </div>
+     <?php endif; ?>
+
+     <!--Show relevant error if not successful-->
+     <?php if (!empty($view->loginError)): ?>
+      <div class="alert alert-danger text-center">
+       <?= htmlspecialchars($view->loginError) ?>
+      </div>
+     <?php endif; ?>
+
+     <!--If not logged in, show login form-->
+     <form method="post" action="/login.php">
+
+      <!--Post the username-->
+      <div class="mb-3">
+       <label for="username" class="form-label">Username</label>
+       <input type="text" name="username" id="username"
+              class="form-control" placeholder="Enter your username"
+              value="<?= htmlspecialchars($_POST['username'] ?? '') ?>"
+              required>
+      </div>
+
+      <!--Post the password-->
+      <div class="mb-3">
+       <label for="password" class="form-label">Password</label>
+       <input type="password" name="password" id="password"
+              class="form-control" placeholder="Enter your password"
+              required>
+      </div>
+
+      <!--This doesn't check captcha, demo only-->
+      <div class="form-check mb-3">
+       <input type="checkbox" class="form-check-input"
+              name="captcha" value="Bike" id="humanCheck">
+       <label for="humanCheck" class="form-check-label">
+        I'm not a robot
+       </label>
+      </div>
+
+      <!-- Submit -->
+      <div class="d-grid">
+       <button type="submit" name="login" class="btn btn-success btn-lg">
+        Login
+       </button>
+      </div>
+     </form>
+
+     <!--Register placeholder-->
+     <div class="text-center mt-3">
+      <small class="text-muted">
+       Don't have an account? Contact support.
+      </small>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+
+<?php endif; ?>
+
+<!--Include the footer view -->
+<?php require('Views/template/footer.phtml'); ?>

@@ -1,0 +1,261 @@
+<?php
+require('template/header.phtml');
+?>
+
+<div class="container mt-5 mb-3">
+ <!-- Search and Filters -->
+ <form class="row g-2 align-items-center" role="search"
+       action="/viewSightings.php" method="get">
+
+  <div class="col-md-6 col-sm-12">
+   <div class="input-group">
+    <input type="search" class="form-control"
+           placeholder="Search by pet name, species, comment, lat, long etc."
+           name="search"
+           value="<?= htmlspecialchars($view->searchTerm ?? '') ?>"
+           aria-label="Search">
+    <button class="btn btn-success" type="submit">Search</button>
+   </div>
+  </div>
+
+  <div class="col-md-6 col-sm-12">
+   <div class="row g-2">
+    <!-- Sort by name -->
+    <div class="col-md-3 col-6">
+     <select name="sort_order" class="form-select">
+      <option value="">Sort by Name</option>
+      <option value="name_asc"
+              <?= ($view->sort === 'name_asc') ? 'selected' : '' ?>>
+       A–Z
+      </option>
+      <option value="name_desc"
+              <?= ($view->sort === 'name_desc') ? 'selected' : '' ?>>
+       Z–A
+      </option>
+     </select>
+    </div>
+
+    <!-- Filter by lost/found -->
+    <div class="col-md-3 col-6">
+     <select name="filter_status" class="form-select">
+      <option value="">Pet Status</option>
+      <option value="lost"
+              <?= ($view->filters['status'] === 'lost') ? 'selected' : '' ?>>
+       Lost
+      </option>
+      <option value="found"
+              <?= ($view->filters['status'] === 'found') ? 'selected' : '' ?>>
+       Found
+      </option>
+     </select>
+    </div>
+
+    <!-- Filter by upload date -->
+    <div class="col-md-3 col-6">
+     <select name="sort_date" class="form-select">
+      <option value="">Upload Date</option>
+      <option value="latest"
+              <?= ($view->sort === 'latest') ? 'selected' : '' ?>>
+       Latest
+      </option>
+      <option value="oldest"
+              <?= ($view->sort === 'oldest') ? 'selected' : '' ?>>
+       Oldest
+      </option>
+     </select>
+    </div>
+
+    <!-- Filter by species -->
+    <div class="col-md-3 col-6">
+     <select name="filter_species" class="form-select">
+      <option value="">All Types</option>
+      <option value="Dog"
+              <?= ($view->filters['species'] === 'Dog') ? 'selected' : '' ?>>
+       Dog
+      </option>
+      <option value="Cat"
+              <?= ($view->filters['species'] === 'Cat') ? 'selected' : '' ?>>
+       Cat
+      </option>
+      <option value="Bird"
+              <?= ($view->filters['species'] === 'Bird') ? 'selected' : '' ?>>
+       Bird
+      </option>
+     </select>
+    </div>
+   </div>
+  </div>
+
+  <div class="col-12 text-end mt-2">
+   <button class="btn btn-outline-success" type="submit">
+    Apply Filters
+   </button>
+  </div>
+ </form>
+
+ <!-- Feedback -->
+ <div class="mt-2">
+  <p class="text-muted mb-0">
+   <?= htmlspecialchars($view->dbMessage ?? '') ?>
+  </p>
+ </div>
+</div>
+
+<!--  Sightings list -->
+<div class="container">
+ <?php if (empty($view->sightingsDataSet)): ?>
+  <div class="alert alert-info mt-4" role="alert">
+   <strong>No sightings found.</strong>
+   Try adjusting your search filters.
+  </div>
+ <?php else: ?>
+  <?php foreach ($view->sightingsDataSet as $sightingsData): ?>
+   <?php
+   $searchTerm = $view->searchTerm ?? '';
+   $status = strtolower($sightingsData->getPetStatus());
+   ?>
+   <div class="sighting-card">
+    <div class="sighting-card-header">
+     <span style="font-size: 18px;">
+      <?= highlightSearchTerm($sightingsData->getPetName(), $searchTerm) ?>
+     </span>
+     <span class="status-badge <?= $status ?>">
+      <?= highlightSearchTerm($sightingsData->getPetStatus(), $searchTerm) ?>
+     </span>
+    </div>
+
+    <div class="sighting-card-body">
+     <div class="row">
+      <div class="col-md-3 col-sm-12 text-center mb-3 mb-md-0">
+       <img src="<?= htmlspecialchars($sightingsData->getPetImages()) ?>"
+            alt="Pet Photo"
+            class="sighting-image">
+      </div>
+
+      <div class="col-md-9 col-sm-12">
+       <div class="sighting-info">
+
+        <div class="info-row">
+         <span class="info-label">Species:</span>
+         <span class="info-value">
+          <?= highlightSearchTerm($sightingsData->getPetSpecies(), $searchTerm) ?>
+         </span>
+        </div>
+
+        <div class="info-row">
+         <span class="info-label">Comment:</span>
+         <div class="info-value comment-box">
+          <?= highlightSearchTerm($sightingsData->getSightingsComment(), $searchTerm) ?>
+         </div>
+        </div>
+
+        <div class="info-row">
+         <span class="info-label">Location:</span>
+         <span class="info-value coordinates">
+          Lat: <?= htmlspecialchars($sightingsData->getSightingsLatitude()) ?>,
+          Lng: <?= htmlspecialchars($sightingsData->getSightingsLongitude()) ?>
+         </span>
+        </div>
+
+        <div class="info-row">
+         <span class="info-label">Sighted:</span>
+         <span class="info-value timestamp">
+          <?= htmlspecialchars($sightingsData->getSightingsTimestamp()) ?>
+         </span>
+        </div>
+
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  <?php endforeach; ?>
+ <?php endif; ?>
+
+ <!-- Pagination -->
+ <?php if ($view->totalPages > 1): ?>
+  <nav aria-label="Pagination" class="mt-4">
+   <ul class="pagination justify-content-center">
+    <!-- Query string for pagination and filter links
+         This ensures when navigating between different view page,
+         current search, filter, and sort options remain applied
+    -->
+    <?php
+    $queryParams = [];
+
+    // Add the search term to the query if provided by usr
+    if (!empty($view->searchTerm))
+     $queryParams[] = 'search=' . urlencode($view->searchTerm);
+    // Add selected status filer if provided by user
+    if (!empty($view->filters['status']))
+     $queryParams[] = 'filter_status=' . urlencode($view->filters['status']);
+    // add selected species if provided by user
+    if (!empty($view->filters['species']))
+     $queryParams[] = 'filter_species=' . urlencode($view->filters['species']);
+    // add the filter oldest or latest to the query
+    if (!empty($view->sort)) {
+     if (in_array($view->sort, ['latest', 'oldest'])) {
+      $queryParams[] = 'sort_date=' . urlencode($view->sort);
+     } else {
+      $queryParams[] = 'sort_order=' . urlencode($view->sort);
+     }
+    }
+
+    //combine all query parameters into a single URL string which
+    // allows to keep all th filter
+    // & allow us to do this in all pagination pages
+    $queryString = !empty($queryParams)
+     ? implode('&', $queryParams) . '&'
+     : '';
+    // Define the base URL which handle the logic (controller viewSightings.php)
+    $baseUrl = 'viewSightings.php?' . $queryString;
+    ?>
+
+    <!-- Previous -->
+    <li class="page-item <?= ($view->page <= 1) ? 'disabled' : '' ?>">
+     <!--If current page is more than one, activate previous button-->
+     <?php if ($view->page > 1): ?>
+      <a class="page-link"
+         href="<?= $baseUrl ?>page=<?= $view->page - 1 ?>">&laquo; Previous</a>
+     <?php else: ?>
+      <span class="page-link">&laquo; Previous</span>
+     <?php endif; ?>
+    </li>
+
+    <!-- Page Numbers calculation-->
+    <?php
+    // Determine which page to display around the current page
+    // (up to two before and after)
+    $start = max(1, $view->page - 2);
+    $end = min($view->totalPages, $view->page + 2);
+    //Loop through the range and render the page number
+    for ($i = $start; $i <= $end; $i++):
+     $active = ($i == $view->page) ? 'active' : '';
+    ?>
+     <li class="page-item <?= $active ?>">
+      <!--Display the active page number and make it non-clickable -->
+      <?php if ($active): ?>
+       <span class="page-link"><?= $i ?></span>
+      <!-- Display other page numbers as clickable links -->
+      <?php else: ?>
+       <a class="page-link" href="<?= $baseUrl ?>page=<?= $i ?>"><?= $i ?></a>
+      <?php endif; ?>
+     </li>
+    <?php endfor; ?>
+
+    <!-- Next button for pagination -->
+    <li class="page-item <?= ($view->page >= $view->totalPages) ? 'disabled' : '' ?>">
+     <!-- If the current page is not the last one, enable the next button-->
+     <?php if ($view->page < $view->totalPages): ?>
+      <a class="page-link"
+         href="<?= $baseUrl ?>page=<?= $view->page + 1 ?>">Next &raquo;</a>
+     <?php else: ?>
+      <span class="page-link">Next &raquo;</span>
+     <?php endif; ?>
+    </li>
+   </ul>
+  </nav>
+ <?php endif; ?>
+</div>
+
+<?php require('template/footer.phtml'); ?>
