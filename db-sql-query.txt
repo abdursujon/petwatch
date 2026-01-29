@@ -1,0 +1,53 @@
+CREATE TABLE users
+(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    passward_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(50) DEFAULT 'User',
+    check (role IN ('User', 'Owner'))
+)
+
+CREATE TABLE sightings
+(
+      id        INT AUTO_INCREMENT PRIMARY KEY,
+      pet_id    INT NOT NULL,
+      user_id   INT,
+      comment   TEXT,
+      latitude  DOUBLE,
+      longitude DOUBLE,
+      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (pet_id) REFERENCES pets(id),
+      FOREIGN KEY (user_id) REFERENCES users(id)
+)
+
+CREATE TABLE pets
+(
+      id            INT AUTO_INCREMENT PRIMARY KEY,
+      name          VARCHAR(255) NOT NULL,
+      species       VARCHAR(100) NOT NULL,
+      breed         VARCHAR(255),
+      color         VARCHAR(100),
+      photo_url     TEXT,
+      status        VARCHAR(50) NOT NULL,
+      description   TEXT,
+      date_reported DATE NOT NULL,
+      user_id       INT,
+      CHECK (status IN ('lost', 'found')),
+      FOREIGN KEY (user_id) REFERENCES users(id)
+)
+
+CREATE TABLE sightings
+(
+      id        INT AUTO_INCREMENT PRIMARY KEY,
+      pet_id    INT NOT NULL,
+      user_id   INT,
+      comment   TEXT,
+      latitude  DOUBLE,
+      longitude DOUBLE,
+      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (pet_id) REFERENCES pets(id),
+      FOREIGN KEY (user_id) REFERENCES users(id)
+)
+
+ssh -v -L 3306:localhost:3306 sge366@poseidon.salford.ac.uk

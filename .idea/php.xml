@@ -12,7 +12,7 @@
   </component>
   <component name="PhpCodeSniffer">
     <phpcs_settings>
-      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="64ad0191-6e11-4c66-b8fb-57153803a668" timeout="30000" />
+      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="35aa2ebf-161a-4a94-854f-7e4312772905" timeout="30000" />
     </phpcs_settings>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.1">

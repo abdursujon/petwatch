@@ -1,361 +1,372 @@
 <?php
 // Load the header
-require('Views/template/header.phtml');
+require_once('template/header.phtml');
 ?>
 
 <!--Check if any user is logged in-->
 <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
 
- <!-- If add pet or manage pet update info is successful show the relevant message -->
- <?php if (!empty($view->successMessage)): ?>
-  <div class="col-lg-10 mx-auto justify-content-center mt-5">
-   <div class="alert alert-success text-center shadow-sm rounded w-100 w-md-75 w-lg-50">
-    <?= htmlspecialchars($view->successMessage); ?>
-   </div>
-  </div>
- <?php endif; ?>
-
- <!--If not successful, for example an owner uploaded an unsupported photo format show what went wrong -->
- <?php if (!empty($view->errorMessage)): ?>
-  <div class="col-lg-10 mx-auto justify-content-center mt-5">
-   <div class="alert alert-danger text-center shadow-sm rounded w-100 w-md-75 w-lg-50">
-    <?= htmlspecialchars($view->errorMessage); ?>
-   </div>
-  </div>
- <?php endif; ?>
-
- <!--Owner can add pet data on database using below form-->
- <div class="container py-4 mt-5">
-  <div class="row">
-   <div class="col-lg-10 mx-auto">
-    <div class="card shadow-sm border-0 bg-light rounded-3">
-     <div class="card-body p-4">
-      <h2 class="text-center mb-5 display-6 text-primary fw-semibold">Add A New Pet</h2>
-      <p class="text-left"><span class="text-danger">* Indicates Required Field</span></p>
-
-      <form action="/mypet.php" method="post" enctype="multipart/form-data">
-       <div class="row g-3">
-
-        <!-- Pet Name required field -->
-        <div class="col-md-6 col-lg-3">
-         <label for="petName" class="form-label small fw-semibold">
-          Name <span class="text-danger">*</span>
-         </label>
-         <input type="text" id="petName" name="name"
-                class="form-control shadow-sm"
-                placeholder="Pet Name" required>
-        </div>
-
-        <!-- Pet species (required field) -->
-        <div class="col-md-6 col-lg-3">
-         <label for="species" class="form-label small fw-semibold">
-          Species <span class="text-danger">*</span>
-         </label>
-         <select id="species" name="species"
-                 class="form-select shadow-sm" required>
-          <option value="" disabled selected>Select Species</option>
-          <option value="Dog">Dog</option>
-          <option value="Cat">Cat</option>
-          <option value="Bird">Bird</option>
-         </select>
-        </div>
-
-        <!-- Breed optional field  -->
-        <div class="col-md-6 col-lg-3">
-         <label for="breed" class="form-label small fw-semibold">Breed</label>
-         <input type="text" id="breed" name="breed"
-                class="form-control shadow-sm"
-                placeholder="Breed">
-        </div>
-
-        <!-- Color required field -->
-        <div class="col-md-6 col-lg-3">
-         <label for="color" class="form-label small fw-semibold">
-          Color <span class="text-danger">*</span>
-         </label>
-         <input type="text" id="color" name="color"
-                class="form-control shadow-sm"
-                placeholder="Color" required>
-        </div>
-
-        <!-- Description optional field -->
-        <div class="col-md-8">
-         <label for="description" class="form-label small fw-semibold">
-          Short Description
-         </label>
-         <textarea id="description" name="description"
-                   class="form-control shadow-sm" rows="1"
-                   placeholder="Briefly describe your pet traits."></textarea>
-        </div>
-
-        <!-- Upload Image required field  -->
-        <div class="col-md-4">
-         <label for="photo" class="form-label small fw-semibold">
-          Upload Pet Image
-         </label>
-         <input type="file" id="photo" name="petphoto"
-                class="form-control shadow-sm"
-                accept=".gif,.jpg,.jpeg,.png" required>
-        </div>
-       </div>
-
-       <!-- Submit and add a pet -->
-       <div class="text-left mt-4">
-        <button type="submit" name="addPet"
-                class="btn btn-primary px-5 py-3 fw-bold shadow-sm">
-         Add Pet
-        </button>
-       </div>
-      </form>
-     </div>
-    </div>
-   </div>
-  </div>
- </div>
-
- <!--Owner can read, update and delete their pet data using this form -->
- <div class="container pb-5 mb-5 mt-5">
-  <div class="row">
-   <div class="col-lg-10 mx-auto">
-    <div class="card shadow-sm border-0 bg-light rounded-3">
-     <div class="card-body p-4">
-
-      <form action="/mypet.php" method="post" enctype="multipart/form-data">
-       <h2 class="text-center mb-5 display-6 text-primary fw-semibold">
-        Manage Your Pets
-       </h2>
-
-       <div class="row mx-2 gy-4">
-        <!--If a logged-in user has pets show the pets they own -->
-        <?php if (!empty($view->pets)): ?>
-         <!--Get all existing pet data -->
-         <?php foreach ($view->pets as $pet): ?>
-          <div class="col-12">
-           <div class="card shadow-sm border-0 bg-white rounded-3">
-            <div class="card-body px-3 py-4">
-             <div class="row gy-3 gx-4 align-items-start">
-
-              <!--Get the current image of each pet-->
-              <div class="col-12 col-md-3 text-center border-end">
-               <label class="form-label fw-bold text-muted">Current Image</label>
-               <!--If the pet has an image on database fetch that image-->
-               <?php if ($pet->getPetImages()): ?>
-                <img src="<?= htmlspecialchars($pet->getPetImages()) ?>" alt="Pet Photo"
-                     class="img-thumbnail mb-3 border-secondary shadow-sm"
-                     style="width: 320px; height: 240px; object-fit: cover;">
-               <?php else: ?>
-                <!--Else show no image has been uploaded -->
-                <div class="border border-info rounded p-4 text-info bg-white
-                small mb-3 shadow-sm">
-                 No image uploaded
-                </div>
-               <?php endif; ?>
-
-               <!--User can change the existing image of their pet by click on
-                this functionality -->
-               <label for="photo_<?= $pet->getId() ?>" class="form-label small
-                fw-semibold">
-                Change Pet Image
-               </label>
-               <input type="file" name="photo_<?= $pet->getId() ?>"
-                      class="form-control form-control-sm shadow-sm"
-                      accept=".gif,.jpg,.jpeg,.png">
-              </div>
-
-              <!--Pet details form-->
-              <div class="col-12 col-md-9">
-               <h4 class="card-title mb-3 border-bottom pb-2 fw-semibold text-primary">
-                <?= htmlspecialchars($pet->getName()) ?>
-               </h4>
-
-               <div class="row g-3">
-                <!--Get pet name by id and allow owner to change the name-->
-                <div class="col-md-6 col-lg-3">
-                 <label class="form-label small text-muted">Name</label>
-                 <input type="text" name="pets[<?= $pet->getId() ?>][name]"
-                        value="<?= htmlspecialchars($pet->getName()) ?>"
-                        class="form-control shadow-sm" placeholder="Pet Name">
-                </div>
-
-                <!--Get pet breed and allow to change it -->
-                <div class="col-md-6 col-lg-3">
-                 <label class="form-label small text-muted">Breed</label>
-                 <input type="text" name="pets[<?= $pet->getId() ?>][breed]"
-                        value="<?= htmlspecialchars($pet->getBreed()) ?>"
-                        class="form-control shadow-sm" placeholder="Breed">
-                </div>
-
-                <!--Get pet color and allow to change it -->
-                <div class="col-md-6 col-lg-3">
-                 <label class="form-label small text-muted">Color</label>
-                 <input type="text" name="pets[<?= $pet->getId() ?>][color]"
-                        value="<?= htmlspecialchars($pet->getColor()) ?>"
-                        class="form-control shadow-sm" placeholder="Color">
-                </div>
-
-                <!--Get pet species and allow owner to change the species-->
-                <div class="col-md-6 col-lg-3">
-                 <label class="form-label small text-muted">Species</label>
-                 <select name="pets[<?= $pet->getId() ?>][species]"
-                         class="form-select shadow-sm">
-                  <option value="Dog"
-                          <?= ($pet->getSpecies() === 'Dog') ? 'selected' : '' ?>>
-                   Dog
-                  </option>
-                  <option value="Cat"
-                          <?= ($pet->getSpecies() === 'Cat') ? 'selected' : '' ?>>
-                   Cat
-                  </option>
-                  <option value="Bird"
-                          <?= ($pet->getSpecies() === 'Bird') ? 'selected' : '' ?>>
-                   Bird
-                  </option>
-                 </select>
-                </div>
-
-                <!--Get current description then allow to change it-->
-                <div class="col-md-9">
-                 <label class="form-label small text-muted">Description</label>
-                 <textarea name="pets[<?= $pet->getId() ?>][description]"
-                           class="form-control shadow-sm" rows="1"
-                           placeholder="Tell us about your pet...">
-                           <?= htmlspecialchars($pet->getDescription()) ?></textarea>
-                </div>
-
-                <!--Get lost and allow to change the status-->
-                <div class="col-md-3">
-                 <label class="form-label small text-muted">Status</label>
-                 <select name="pets[<?= $pet->getId() ?>][status]"
-                         class="form-select shadow-sm">
-                  <option value="lost"
-                          <?= ($pet->getStatus() === 'lost') ? 'selected' : '' ?>>
-                   Lost
-                  </option>
-                  <option value="found"
-                          <?= ($pet->getStatus() === 'found') ? 'selected' : '' ?>>
-                   Found
-                  </option>
-                 </select>
-                </div>
-               </div>
-
-               <!--Update pet info after editing by below process-->
-               <div class="row g-3 mt-4">
-                <div class="col-md-6 col-lg-4">
-                 <!--After changing the data user can click on update pet
-                  info to update the database-->
-                 <button type="submit" name="update"
-                         value="<?= $pet->getId() ?>"
-                         class="btn btn-success w-100 fw-bold shadow-sm">
-                  <i class="bi bi-pencil-square"></i> Update Pet Info
-                 </button>
-                </div>
-
-                <!--Allow to delete the pet information by getting the pet id-->
-                <div class="col-md-6 col-lg-4">
-                 <button type="button"
-                         class="btn btn-outline-danger w-100 fw-bold shadow-sm"
-                         data-bs-toggle="modal"
-                         data-bs-target="#deleteConfirmModal"
-                         data-pet-id="<?= $pet->getId() ?>"
-                         data-pet-name="<?= htmlspecialchars($pet->getName()) ?>">
-                  <i class="bi bi-trash"></i> Delete
-                 </button>
-                </div>
-               </div>
-              </div>
-             </div>
+    <!-- If add pet or manage pet update info is successful show the relevant message -->
+    <?php if (!empty($view->successMessage)): ?>
+        <div class="col-lg-10 mx-auto justify-content-center mt-5">
+            <div class="alert alert-success text-center shadow-sm rounded w-100 w-md-75 w-lg-50">
+                <?= htmlspecialchars($view->successMessage); ?>
             </div>
-           </div>
-          </div>
-         <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 
-         <!--If an owner has not registered a pet yet, show them below message.-->
-        <?php else: ?>
-         <div class="col-12">
-          <div class="alert alert-info text-center fw-semibold shadow-sm">
-           You have no pets added yet.<br>
-           Use the "Add New Pet" feature to get started!
-          </div>
-         </div>
-        <?php endif; ?>
-       </div>
-      </form>
-     </div>
+    <!--If not successful, for example an owner uploaded an unsupported photo format show what went wrong -->
+    <?php if (!empty($view->errorMessage)): ?>
+        <div class="col-lg-10 mx-auto justify-content-center mt-5">
+            <div class="alert alert-danger text-center shadow-sm rounded w-100 w-md-75 w-lg-50">
+                <?= htmlspecialchars($view->errorMessage); ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <!--Owner can add pet data on database using below form-->
+    <div class="container py-4 mt-5">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="card shadow-sm border-0 bg-light rounded-3">
+                    <div class="card-body p-4">
+                        <h2 class="text-center mb-5 display-6 text-primary fw-semibold">Add A New Pet</h2>
+                        <p class="text-left"><span class="text-danger">* Indicates Required Field</span></p>
+
+                        <form action="mypet.php" method="post" enctype="multipart/form-data">
+                            <div class="row g-3">
+
+                                <!-- Pet Name required field -->
+                                <div class="col-md-6 col-lg-3">
+                                    <label for="petName" class="form-label small fw-semibold">
+                                        Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" id="petName" name="name"
+                                           class="form-control shadow-sm"
+                                           placeholder="Pet Name" required>
+                                </div>
+
+                                <!-- Pet species (required field) -->
+                                <div class="col-md-6 col-lg-3">
+                                    <label for="species" class="form-label small fw-semibold">
+                                        Species <span class="text-danger">*</span>
+                                    </label>
+                                    <select id="species" name="species"
+                                            class="form-select shadow-sm" required>
+                                        <option value="" disabled selected>Select Species</option>
+                                        <option value="Dog">Dog</option>
+                                        <option value="Cat">Cat</option>
+                                        <option value="Bird">Bird</option>
+                                    </select>
+                                </div>
+
+                                <!-- Breed optional field  -->
+                                <div class="col-md-6 col-lg-3">
+                                    <label for="breed" class="form-label small fw-semibold">Breed</label>
+                                    <input type="text" id="breed" name="breed"
+                                           class="form-control shadow-sm"
+                                           placeholder="Breed">
+                                </div>
+
+                                <!-- Color required field -->
+                                <div class="col-md-6 col-lg-3">
+                                    <label for="color" class="form-label small fw-semibold">
+                                        Color <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" id="color" name="color"
+                                           class="form-control shadow-sm"
+                                           placeholder="Color" required>
+                                </div>
+
+                                <!-- Description optional field -->
+                                <div class="col-md-8">
+                                    <label for="description" class="form-label small fw-semibold">
+                                        Short Description
+                                    </label>
+                                    <textarea id="description" name="description"
+                                              class="form-control shadow-sm" rows="1"
+                                              placeholder="Briefly describe your pet traits."></textarea>
+                                </div>
+
+                                <!-- Upload Image required field  -->
+                                <div class="col-md-4">
+                                    <label for="photo" class="form-label small fw-semibold">
+                                        Upload Pet Image
+                                    </label>
+                                    <input type="file" id="photo" name="petphoto"
+                                           class="form-control shadow-sm"
+                                           accept=".gif,.jpg,.jpeg,.png" required>
+                                </div>
+                            </div>
+
+                            <!-- Submit and add a pet -->
+                            <div class="text-left mt-4">
+                                <button type="submit" name="addPet"
+                                        class="btn btn-primary px-5 py-3 fw-bold shadow-sm">
+                                    Add Pet
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-   </div>
-  </div>
- </div>
 
- <!-- Delete Confirmation Modal utilising boostrap is implemented which is used to
- confirm delete to avoid deleting important information by mis click
- Note: This is an optional implementation and I have used a small javaScript snippet.
- -->
- <div class="modal fade" id="deleteConfirmModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-   <div class="modal-content border-0 shadow-lg rounded-3">
-    <div class="modal-header bg-danger text-white">
-     <h5 class="modal-title">
-      <i class="bi bi-exclamation-triangle"></i> Confirm Deletion
-     </h5>
-     <button type="button" class="btn-close btn-close-white"
-             data-bs-dismiss="modal"></button>
+    <!--Owner can read, update and delete their pet data using this form -->
+    <div class="container pb-5 mb-5 mt-5">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="card shadow-sm border-0 bg-light rounded-3">
+                    <div class="card-body p-4">
+
+                        <form action="mypet.php" method="post" enctype="multipart/form-data">
+                            <h2 class="text-center mb-5 display-6 text-primary fw-semibold">
+                                Manage Your Pets
+                            </h2>
+
+                            <div class="row mx-2 gy-4">
+                                <!--If a logged-in user has pets show the pets they own -->
+                                <?php if (!empty($view->pets)): ?>
+                                    <!--Get all existing pet data -->
+                                    <?php foreach ($view->pets as $pet): ?>
+                                        <div class="col-12">
+                                            <div class="card shadow-sm border-0 bg-white rounded-3">
+                                                <div class="card-body px-3 py-4">
+                                                    <div class="row gy-3 gx-4 align-items-start">
+
+                                                        <!--Get the current image of each pet-->
+                                                        <div class="col-12 col-md-3 text-center border-end">
+                                                            <label class="form-label fw-bold text-muted">Current
+                                                                Image</label>
+                                                            <!--If the pet has an image on database fetch that image-->
+                                                            <?php if ($pet->getPetImages()): ?>
+                                                                <img src="<?= htmlspecialchars($pet->getPetImages()) ?>"
+                                                                     alt="Pet Photo"
+                                                                     class="img-thumbnail mb-3 border-secondary shadow-sm"
+                                                                     style="width: 320px; height: 240px; object-fit: cover;">
+                                                            <?php else: ?>
+                                                                <!--Else show no image has been uploaded -->
+                                                                <div class="border border-info rounded p-4 text-info bg-white
+                small mb-3 shadow-sm">
+                                                                    No image uploaded
+                                                                </div>
+                                                            <?php endif; ?>
+
+                                                            <!--User can change the existing image of their pet by click on
+                                                             this functionality -->
+                                                            <label for="photo_<?= $pet->getId() ?>" class="form-label small
+                fw-semibold">
+                                                                Change Pet Image
+                                                            </label>
+                                                            <input type="file" name="photo_<?= $pet->getId() ?>"
+                                                                   class="form-control form-control-sm shadow-sm"
+                                                                   accept=".gif,.jpg,.jpeg,.png">
+                                                        </div>
+
+                                                        <!--Pet details form-->
+                                                        <div class="col-12 col-md-9">
+                                                            <h4 class="card-title mb-3 border-bottom pb-2 fw-semibold text-primary">
+                                                                <?= htmlspecialchars($pet->getName()) ?>
+                                                            </h4>
+
+                                                            <div class="row g-3">
+                                                                <!--Get pet name by id and allow owner to change the name-->
+                                                                <div class="col-md-6 col-lg-3">
+                                                                    <label class="form-label small text-muted">Name</label>
+                                                                    <input type="text"
+                                                                           name="pets[<?= $pet->getId() ?>][name]"
+                                                                           value="<?= htmlspecialchars($pet->getName()) ?>"
+                                                                           class="form-control shadow-sm"
+                                                                           placeholder="Pet Name">
+                                                                </div>
+
+                                                                <!--Get pet breed and allow to change it -->
+                                                                <div class="col-md-6 col-lg-3">
+                                                                    <label class="form-label small text-muted">Breed</label>
+                                                                    <input type="text"
+                                                                           name="pets[<?= $pet->getId() ?>][breed]"
+                                                                           value="<?= htmlspecialchars($pet->getBreed()) ?>"
+                                                                           class="form-control shadow-sm"
+                                                                           placeholder="Breed">
+                                                                </div>
+
+                                                                <!--Get pet color and allow to change it -->
+                                                                <div class="col-md-6 col-lg-3">
+                                                                    <label class="form-label small text-muted">Color</label>
+                                                                    <input type="text"
+                                                                           name="pets[<?= $pet->getId() ?>][color]"
+                                                                           value="<?= htmlspecialchars($pet->getColor()) ?>"
+                                                                           class="form-control shadow-sm"
+                                                                           placeholder="Color">
+                                                                </div>
+
+                                                                <!--Get pet species and allow owner to change the species-->
+                                                                <div class="col-md-6 col-lg-3">
+                                                                    <label class="form-label small text-muted">Species</label>
+                                                                    <select name="pets[<?= $pet->getId() ?>][species]"
+                                                                            class="form-select shadow-sm">
+                                                                        <option value="Dog"
+                                                                                <?= ($pet->getSpecies() === 'Dog') ? 'selected' : '' ?>>
+                                                                            Dog
+                                                                        </option>
+                                                                        <option value="Cat"
+                                                                                <?= ($pet->getSpecies() === 'Cat') ? 'selected' : '' ?>>
+                                                                            Cat
+                                                                        </option>
+                                                                        <option value="Bird"
+                                                                                <?= ($pet->getSpecies() === 'Bird') ? 'selected' : '' ?>>
+                                                                            Bird
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <!--Get current description then allow to change it-->
+                                                                <div class="col-md-9">
+                                                                    <label class="form-label small text-muted">Description</label>
+                                                                    <textarea
+                                                                            name="pets[<?= $pet->getId() ?>][description]"
+                                                                            class="form-control shadow-sm" rows="1"
+                                                                            placeholder="Tell us about your pet...">
+                           <?= htmlspecialchars($pet->getDescription()) ?></textarea>
+                                                                </div>
+
+                                                                <!--Get lost and allow to change the status-->
+                                                                <div class="col-md-3">
+                                                                    <label class="form-label small text-muted">Status</label>
+                                                                    <select name="pets[<?= $pet->getId() ?>][status]"
+                                                                            class="form-select shadow-sm">
+                                                                        <option value="lost"
+                                                                                <?= ($pet->getStatus() === 'lost') ? 'selected' : '' ?>>
+                                                                            Lost
+                                                                        </option>
+                                                                        <option value="found"
+                                                                                <?= ($pet->getStatus() === 'found') ? 'selected' : '' ?>>
+                                                                            Found
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <!--Update pet info after editing by below process-->
+                                                            <div class="row g-3 mt-4">
+                                                                <div class="col-md-6 col-lg-4">
+                                                                    <!--After changing the data user can click on update pet
+                                                                     info to update the database-->
+                                                                    <button type="submit" name="update"
+                                                                            value="<?= $pet->getId() ?>"
+                                                                            class="btn btn-success w-100 fw-bold shadow-sm">
+                                                                        <i class="bi bi-pencil-square"></i> Update Pet
+                                                                        Info
+                                                                    </button>
+                                                                </div>
+
+                                                                <!--Allow to delete the pet information by getting the pet id-->
+                                                                <div class="col-md-6 col-lg-4">
+                                                                    <button type="button"
+                                                                            class="btn btn-outline-danger w-100 fw-bold shadow-sm"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#deleteConfirmModal"
+                                                                            data-pet-id="<?= $pet->getId() ?>"
+                                                                            data-pet-name="<?= htmlspecialchars($pet->getName()) ?>">
+                                                                        <i class="bi bi-trash"></i> Delete
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+
+                                    <!--If an owner has not registered a pet yet, show them below message.-->
+                                <?php else: ?>
+                                    <div class="col-12">
+                                        <div class="alert alert-info text-center fw-semibold shadow-sm">
+                                            You have no pets added yet.<br>
+                                            Use the "Add New Pet" feature to get started!
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="modal-body text-center fs-5 py-4">
-     Are you sure you want to delete
-     <!--get the pet name and show it in bold danger to verify
-      user that they are sure-->
-     <span id="deletePetName" class="fw-bold text-danger"></span>
-     and all related sightings?
+
+    <!-- Delete Confirmation Modal utilising boostrap is implemented which is used to
+    confirm delete to avoid deleting important information by mis click
+    Note: This is an optional implementation and I have used a small javaScript snippet.
+    -->
+    <div class="modal fade" id="deleteConfirmModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-3">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle"></i> Confirm Deletion
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center fs-5 py-4">
+                    Are you sure you want to delete
+                    <!--get the pet name and show it in bold danger to verify
+                     user that they are sure-->
+                    <span id="deletePetName" class="fw-bold text-danger"></span>
+                    and all related sightings?
+                </div>
+                <div class="modal-footer justify-content-center border-0 pb-4">
+                    <form id="deletePetForm" method="post" action="mypet.php">
+                        <input type="hidden" name="deletePet" id="deletePetId">
+
+                        <!--Allow owner to cancel to delete-->
+                        <button type="button"
+                                class="btn btn-secondary fw-semibold shadow-sm"
+                                data-bs-dismiss="modal">Cancel
+                        </button>
+
+                        <!--when pressed on Yes, Delete the form will then delete
+                         that pet information-->
+                        <button type="submit"
+                                class="btn btn-danger px-4 fw-semibold shadow-sm">
+                            Yes, Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="modal-footer justify-content-center border-0 pb-4">
-     <form id="deletePetForm" method="post" action="mypet.php">
-      <input type="hidden" name="deletePet" id="deletePetId">
 
-      <!--Allow owner to cancel to delete-->
-      <button type="button"
-              class="btn btn-secondary fw-semibold shadow-sm"
-              data-bs-dismiss="modal">Cancel</button>
-
-      <!--when pressed on Yes, Delete the form will then delete
-       that pet information-->
-      <button type="submit"
-              class="btn btn-danger px-4 fw-semibold shadow-sm">
-       Yes, Delete
-      </button>
-     </form>
-    </div>
-   </div>
-  </div>
- </div>
-
- <!-- JavaScript snippet to the modal and show relevant information-->
- <script>
-  /*Get the delete confirmation modal element*/
-  const deleteModal = document.getElementById('deleteConfirmModal');
-  /* Add even listener when the modal is about to be shown */
-  deleteModal.addEventListener('show.bs.modal', event => {
-   /*Button to triggers the modal */
-   const button = event.relatedTarget;
-   /* Pass the pet id into the form which then will be handled by php
-   script to delete the pet information*/
-   document.getElementById('deletePetId').value =
-    button.getAttribute('data-pet-id');
-   /* Show the pet name on the modal  */
-   document.getElementById('deletePetName').textContent =
-    button.getAttribute('data-pet-name');
-  });
- </script>
+    <!-- JavaScript snippet to the modal and show relevant information-->
+    <script>
+        /*Get the delete confirmation modal element*/
+        const deleteModal = document.getElementById('deleteConfirmModal');
+        /* Add even listener when the modal is about to be shown */
+        deleteModal.addEventListener('show.bs.modal', event => {
+            /*Button to triggers the modal */
+            const button = event.relatedTarget;
+            /* Pass the pet id into the form which then will be handled by php
+            script to delete the pet information*/
+            document.getElementById('deletePetId').value =
+                button.getAttribute('data-pet-id');
+            /* Show the pet name on the modal  */
+            document.getElementById('deletePetName').textContent =
+                button.getAttribute('data-pet-name');
+        });
+    </script>
 
 <?php else: ?>
- <div class="container text-center my-5">
-  <div class="alert alert-warning shadow-sm">
-   You must be logged in to view your pets.
-  </div>
-  <a href="/login.php" class="btn btn-primary fw-semibold shadow-sm">
-   Login
-  </a>
- </div>
+    <div class="container text-center my-5">
+        <div class="alert alert-warning shadow-sm">
+            You must be logged in to view your pets.
+        </div>
+        <a href="login.php" class="btn btn-primary fw-semibold shadow-sm">
+            Login
+        </a>
+    </div>
 <?php endif; ?>
 
-<?php require('Views/template/footer.phtml'); ?>
+<?php require_once('template/footer.phtml'); ?>

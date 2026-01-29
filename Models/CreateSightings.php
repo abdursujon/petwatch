@@ -56,7 +56,7 @@ class CreateSightings {
 
     public function getSightingsByUser($userId): array {
         try {
-            $sql = "SELECT 
+            $sql = "SELECT
                         s.id,
                         p.name AS pet_name,
                         p.species,
@@ -98,9 +98,9 @@ class CreateSightings {
                 return false;
             }
 
-            $sql = "UPDATE sightings 
+            $sql = "UPDATE sightings
                     SET " . implode(', ', $fields) . ",
-                        timestamp = datetime('now')
+                        timestamp = NOW()
                     WHERE id = :id AND user_id = :user_id";
             $stmt = $this->_dbHandle->prepare($sql);
             $stmt->execute($params);

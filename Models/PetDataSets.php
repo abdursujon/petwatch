@@ -40,7 +40,7 @@ class PetDataSets {
                  description, photo_url, status, date_reported)
                 VALUES
                 (:user_id, :name, :species, :breed, :color,
-                 :description, :photo_url, 'lost', datetime('now'))";
+                 :description, :photo_url, 'lost', NOW())";
 
         $stmt = $this->_dbHandle->prepare($sql);
         $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
