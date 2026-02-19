@@ -30,39 +30,8 @@ Feature Map
    not need to add features outside of the scope above but you are encouraged to deliver
    well structured OO code.
 
-Technical requirements for Map
-1. OO & Design: Cohesive JS/PHP OO architecture with clear patterns and re-use.
-2. AJAX: 3+ high-quality, efficient endpoints with robust error handling and caching where appropriate.
-3. Security: Strong input validation, CSRF/URL tokens, output encoding; shows threat-modelling decisions.
-4. Data: JSON/XML via extended DB classes; clear schemas.
-5. Map/UX: Highly sophisticated, real-time updates, smooth interactions (e.g., list to map focus, clustering), reliable geolocation, fully responsive; scales to 100s of items.
-6. Comments: Consistent, meaningful, maintainable.
-7. Strictly no prohibited tools; exemplary database usage and performance tuning.
-8. Hosted on poseidon.salford.ac.uk using a MariaDB database
-
 Feature Live Search
 1. AJAX implementation of live search feature and results for users (based on material
    in Workshops 15 & 16) including feature information where appropriate and search
    filters. Consider browser memory usage. The search feature must be powerful and
    allow effective narrowing of results to a small number from a large dataset.
-
-Technical requirements for Map
-1. OO & Design: Elegant, reusable classes; clear pattern.
-2. AJAX: Multiple endpoints (3+ if appropriate) enabling sophisticated interactions (e.g., debounced live search with ranking, or windowed infinite scrolling with virtualisation).
-3. Security: Comprehensive validation and tokenisation; robust input sanitisation.
-4. Data: JSON/XML contracts; paginated/filtered payloads.
-5. Performance: Excellent memory and network efficiency for 100s+ items.
-6. Comments: Consistently excellent. No prohibited tools.
-7. Hosted on poseidon.salford.ac.uk using a MariaDB database
-Tech requirments 
-1. DOM 
-2. Eventhandler and listener 
-3. Validation 
-4. Class
-5. Ajax
-6. Json
-7. Design pattern
-8. Geolocation API
-9. Caching 
-10. Leaflet 
-11. Debouncing 

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ajax</title>
+</head>
+<body>
+  <p> Testing Ajax XMLHttpRequest and fetch method.</p>
+  <p id="ajax_response"></p>
+  <button id="ajaxBtn">Click me</button>
+  <p id="fetch_response"></p>
+  <button id="fetchBtn">Click me</button>
+
+  <p>Type a location name you want to visit</p>
+  <form>
+      Location<input type="text" onkeyup="showHint(this.value); showHintAsAnOption(this.value); "/>
+      <p>Suggestions: <span id="hintOutput"></span></p>
+      <select id="resultSelectionBox" style="width: 250px;"></select> <br>
+      Space engineer: <input type="text" onkeyup="showJsonHintOutput(this.value);"/>
+      <p>Suggestions: <span id="jsonOutput"></span></p>
+      Care manufacturer: <input type="text" onkeyup="showJsonHintOutputTwo(this.value);"/>
+      <p>Suggestions: <span id="jsonOutputTwo"></span></p>
+  </form>
+<script src="ajax.js"></script>
+</body>
+</html>
