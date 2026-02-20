@@ -1,0 +1,1 @@
+// SightingList.js - Renders the sighting list in DOM, handles click events to pan map to selected sighting

@@ -1,0 +1,2 @@
+// This js implements mediator pattern. Instead of each js objects talking to each other they communicate through MapMediatorApp.js.
+// Instead of having many to many relation, we have many to one, which keeps the object manipulation clean.

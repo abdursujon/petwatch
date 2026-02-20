@@ -1,9 +1,7 @@
-Important
-1. Class
-2. Design pattern
-3. OOP
+Live Link: http://sickly-impostors.poseidon.salford.ac.uk/clientserver/viewSightings.php
 
-Feature Map
+Feature One: Live map 
+![Map design](images/img_1.png)
 1. Interactive live mapping
 2. It needs to allow users to list/view missing pets with their
    stored sighting location as a list and on a map with a marker and marker pop-up info
@@ -14,8 +12,7 @@ Feature Map
 3. For authenticated users each missing pet record should be displayed with a user
    interface that allows for adding a sighting – similar to a review on Amazon or
    TripAdvisor. e.g. “spotted near the piccadilly tram stop”, “seen at the roadside next to
-   McDonalds”.
-   The sighting comment should be stored in the databased created for
+   McDonalds”. The sighting comment should be stored in the databased created for
    DRAFT version Assignment 1. Higher marks will be gained if well coded and structured AJAX techniques
    are used for this.
 
@@ -30,7 +27,7 @@ Feature Map
    not need to add features outside of the scope above but you are encouraged to deliver
    well structured OO code.
 
-Technical requirements for Map
+Requirements for Map
 1. OO & Design: Cohesive JS/PHP OO architecture with clear patterns and re-use.
 2. AJAX: 3+ high-quality, efficient endpoints with robust error handling and caching where appropriate.
 3. Security: Strong input validation, CSRF/URL tokens, output encoding; shows threat-modelling decisions.
@@ -46,19 +43,20 @@ Feature Live Search
    filters. Consider browser memory usage. The search feature must be powerful and
    allow effective narrowing of results to a small number from a large dataset.
 
-Technical requirements for Map
+Requirements for Live Search
 1. OO & Design: Elegant, reusable classes; clear pattern.
-2. AJAX: Multiple endpoints (3+ if appropriate) enabling sophisticated interactions (e.g., debounced live search with ranking, or windowed infinite scrolling with virtualisation).
-3. Security: Comprehensive validation and tokenisation; robust input sanitisation.
-4. Data: JSON/XML contracts; paginated/filtered payloads.
-5. Performance: Excellent memory and network efficiency for 100s+ items.
-6. Comments: Consistently excellent. No prohibited tools.
-7. Hosted on poseidon.salford.ac.uk using a MariaDB database
+2. AJAX: Multiple endpoints (3+ if appropriate) enabling sophisticated interactions (e.g., debounced live search with ranking).
+4. Security: Comprehensive validation and tokenisation; robust input sanitisation.
+5. Data: JSON/XML contracts; paginated/filtered payloads.
+6. Performance: Excellent memory and network efficiency for 100s+ items.
+7. Comments: Consistently excellent. No prohibited tools.
+8. Hosted on poseidon.salford.ac.uk using a MariaDB database
+
 Tech requirments 
 1. DOM 
 2. Eventhandler and listener 
 3. Validation 
-4. Class
+4. Class & OOP
 5. Ajax
 6. Json
 7. Design pattern
