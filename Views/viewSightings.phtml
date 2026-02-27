@@ -1,7 +1,7 @@
 <?php
 require_once('template/header.phtml');
 ?>
-
+<div id="map"></div>
 <div class="container mt-5 mb-3">
     <!-- Search and Filters -->
     <form class="row g-2 align-items-center" role="search"
@@ -257,5 +257,7 @@ require_once('template/header.phtml');
         </nav>
     <?php endif; ?>
 </div>
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../js/map/geolocation.js"></script>
+<script src="../js/map/map.js"></script>
 <?php require('template/footer.phtml'); ?>

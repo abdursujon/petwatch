@@ -19,7 +19,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 
 var xhr = new XMLHttpRequest();
-xhr.open('GET','markers.php', true);
+xhr.open('GET','js/map/markers.php', true);
 xhr.send();
 
 let popupOption = { "closeButton": false}

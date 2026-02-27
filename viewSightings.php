@@ -58,7 +58,7 @@ $view->filters = [
 
 $view->sort = $sortDate ?: $sortOrder ?: '';
 
-$sightingsDataSet = new ViewSightingsDataSet();
+$sightingsDataSet = new SightingsMapDataSet();
 
 $params = [
     'search' => $searchTerm,
@@ -67,34 +67,34 @@ $params = [
     'sort_order' => $sortOrder,
     'sort_date' => $sortDate
 ];
-
-$totalRecords = $sightingsDataSet->countSightingsWithFilters($params);
-$totalPages = ceil($totalRecords / $limit);
-
-$view->page = $page;
-$view->totalPages = $totalPages;
-$view->limit = $limit;
-
-$view->sightingsDataSet =
-    $sightingsDataSet->fetchSightingsWithFilters(
-        $params,
-        $limit,
-        $offset
-    );
-
-if ($totalRecords == 0) {
-    $view->dbMessage = !empty($searchTerm)
-        ? "No results found matching '" . htmlspecialchars($searchTerm) . "'."
-        : "No results found.";
-} else {
-    $view->dbMessage = "$totalRecords total result(s)";
-    if (!empty($searchTerm)) {
-        $view->dbMessage .=
-            " found matching '" . htmlspecialchars($searchTerm) . "'";
-    }
-    if ($totalPages > 1) {
-        $view->dbMessage .= ". Showing page $page of $totalPages.";
-    }
-}
+//
+//$totalRecords = $sightingsDataSet->countSightingsWithFilters($params);
+//$totalPages = ceil($totalRecords / $limit);
+//
+//$view->page = $page;
+//$view->totalPages = $totalPages;
+//$view->limit = $limit;
+//
+//$view->sightingsDataSet =
+//    $sightingsDataSet->fetchSightingsWithFilters(
+//        $params,
+//        $limit,
+//        $offset
+//    );
+//
+//if ($totalRecords == 0) {
+//    $view->dbMessage = !empty($searchTerm)
+//        ? "No results found matching '" . htmlspecialchars($searchTerm) . "'."
+//        : "No results found.";
+//} else {
+//    $view->dbMessage = "$totalRecords total result(s)";
+//    if (!empty($searchTerm)) {
+//        $view->dbMessage .=
+//            " found matching '" . htmlspecialchars($searchTerm) . "'";
+//    }
+//    if ($totalPages > 1) {
+//        $view->dbMessage .= ". Showing page $page of $totalPages.";
+//    }
+//}
 
 require_once('Views/viewSightings.phtml');
