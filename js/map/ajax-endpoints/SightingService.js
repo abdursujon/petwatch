@@ -1,1 +1,0 @@
-// SightingService.js - AJAX calls (fetch sightings, post new sighting, get lost pets) using Fetch API

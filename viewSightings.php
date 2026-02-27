@@ -7,7 +7,7 @@ session_start();
 
 require_once('Models/Database.php');
 require_once('Models/LocationDataSets.php');
-require_once('Models/ViewSightingsDataSets.php');
+require_once('Models/SightingsMapDataSet.php');
 
 $view = new stdClass();
 

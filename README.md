@@ -35,7 +35,7 @@ Requirements for Map
 5. Map/UX: Highly sophisticated, real-time updates, smooth interactions (e.g., list to map focus, clustering), reliable geolocation, fully responsive; scales to 100s of items.
 6. Comments: Consistent, meaningful, maintainable.
 7. Strictly no prohibited tools; exemplary database usage and performance tuning.
-8. Hosted on poseidon.salford.ac.uk using a MariaDB database
+x 8. Hosted on poseidon.salford.ac.uk using a MariaDB database 
 
 Feature Live Search
 1. AJAX implementation of live search feature and results for users (based on material
@@ -64,3 +64,8 @@ Tech requirments
 9. Caching 
 10. Leaflet 
 11. Debouncing 
+
+poseidon ssh connection: 
+terminal command: ssh -L 3306:localhost:3306 username@poseidon.salford.ac.uk
+and in database: conect with mariadb pass 
+

@@ -1,1 +1,0 @@
-// PetMap.js - Leaflet map init, geolocation centering, markers, popups, marker clustering
