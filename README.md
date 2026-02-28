@@ -1,12 +1,12 @@
 Live Link: http://sickly-impostors.poseidon.salford.ac.uk/clientserver/viewSightings.php
 
-Feature One: Live map 
+Feature One: Live petMap 
 ![Map design](images/img_1.png)
 1. Interactive live mapping
 2. It needs to allow users to list/view missing pets with their
-   stored sighting location as a list and on a map with a marker and marker pop-up info
+   stored sighting location as a list and on a petMap with a marker and marker pop-up info
    box using mapping code techniques covered in the lectures and workshops.
-   The map should initially centre on the users own location using geolocation techniques covered in
+   The petMap should initially centre on the users own location using geolocation techniques covered in
    the workshops.
 
 3. For authenticated users each missing pet record should be displayed with a user
@@ -23,7 +23,7 @@ Feature One: Live map
 5. The final client application functionality sophistication and user experience is up to you to
    work on as long as it meets these main requirements above. E.g. Using JavaScript you
    can make the user experience particularly smooth and efficient for locating pets by
-   moving the map to location when a record is selected from the list of sightings. You do
+   moving the petMap to location when a record is selected from the list of sightings. You do
    not need to add features outside of the scope above but you are encouraged to deliver
    well structured OO code.
 
@@ -32,7 +32,7 @@ Requirements for Map
 2. AJAX: 3+ high-quality, efficient endpoints with robust error handling and caching where appropriate.
 3. Security: Strong input validation, CSRF/URL tokens, output encoding; shows threat-modelling decisions.
 4. Data: JSON/XML via extended DB classes; clear schemas.
-5. Map/UX: Highly sophisticated, real-time updates, smooth interactions (e.g., list to map focus, clustering), reliable geolocation, fully responsive; scales to 100s of items.
+5. Map/UX: Highly sophisticated, real-time updates, smooth interactions (e.g., list to petMap focus, clustering), reliable geolocation, fully responsive; scales to 100s of items.
 6. Comments: Consistent, meaningful, maintainable.
 7. Strictly no prohibited tools; exemplary database usage and performance tuning.
 x 8. Hosted on poseidon.salford.ac.uk using a MariaDB database 
@@ -69,3 +69,11 @@ poseidon ssh connection:
 terminal command: ssh -L 3306:localhost:3306 username@poseidon.salford.ac.uk
 and in database: conect with mariadb pass 
 
+run the server:  php -S localhost:8000  
+export db_password="pass"
+
+File that chaged: 
+1. ViewSighints.phtml
+2. SightingsMapDataSet.php 
+3. createsighting controller 
+source ~/.bashrc

@@ -7,88 +7,8 @@
     color: #000;
 }
 
-/* Dark Theme Pagination  */
-.pagination {
-    gap: 8px;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-}
-
-.pagination .page-item {
-    margin: 0;
-}
-
-.pagination .page-link {
-    background-color: #343a40;
-    border: 2px solid #495057;
-    border-radius: 8px;
-    color: #fff;
-    font-weight: 500;
-    padding: 10px 16px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    min-width: 45px;
-    text-align: center;
-}
-
-.pagination .page-link:hover {
-    background-color: #495057;
-    color: #fff;
-    border-color: #6c757d;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #198754;
-    border-color: #198754;
-    color: white;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.5);
-}
-
-.pagination .page-item.active .page-link:hover {
-    background-color: #157347;
-    border-color: #157347;
-}
-
-.pagination .page-item.disabled .page-link {
-    background-color: #212529;
-    border-color: #343a40;
-    color: #6c757d;
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-.pagination .page-item.disabled .page-link:hover {
-    background-color: #212529;
-    border-color: #343a40;
-    color: #6c757d;
-    transform: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-/* Previous/Next buttons special styling */
-.pagination .page-item:first-child .page-link,
-.pagination .page-item:last-child .page-link {
-    font-weight: 600;
-    padding: 10px 20px;
-}
 
 /* ============: Media query for small devices :=========== */
-@media (max-width: 576px) {
-    .pagination .page-link {
-        padding: 8px 12px;
-        font-size: 14px;
-        min-width: 38px;
-    }
-
-    .pagination .page-item:first-child .page-link,
-    .pagination .page-item:last-child .page-link {
-        padding: 8px 14px;
-    }
-}
-
 /* Modern Sightings Card Styling */
 .sighting-card {
     background: white;

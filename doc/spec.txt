@@ -6,9 +6,9 @@ Important
 Feature Map
 1. Interactive live mapping
 2. It needs to allow users to list/view missing pets with their
-   stored sighting location as a list and on a map with a marker and marker pop-up info
+   stored sighting location as a list and on a petMap with a marker and marker pop-up info
    box using mapping code techniques covered in the lectures and workshops.
-   The map should initially centre on the users own location using geolocation techniques covered in
+   The petMap should initially centre on the users own location using geolocation techniques covered in
    the workshops.
 
 3. For authenticated users each missing pet record should be displayed with a user
@@ -26,7 +26,7 @@ Feature Map
 5. The final client application functionality sophistication and user experience is up to you to
    work on as long as it meets these main requirements above. E.g. Using JavaScript you
    can make the user experience particularly smooth and efficient for locating pets by
-   moving the map to location when a record is selected from the list of sightings. You do
+   moving the petMap to location when a record is selected from the list of sightings. You do
    not need to add features outside of the scope above but you are encouraged to deliver
    well structured OO code.
 

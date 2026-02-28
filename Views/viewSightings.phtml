@@ -1,7 +1,7 @@
 <?php
 require_once('template/header.phtml');
 ?>
-<div id="map"></div>
+<div id="map" class="container-fluid"></div>
 <div class="container mt-5 mb-3">
     <!-- Search and Filters -->
     <form class="row g-2 align-items-center" role="search"
@@ -257,7 +257,10 @@ require_once('template/header.phtml');
         </nav>
     <?php endif; ?>
 </div>
+<!--Allow java script to know wether a user is logged in. Without this javascript does not know if a user is logged in. -->
+<script>
+ const isLoggedIn = <?php echo !empty($_SESSION['loggedin']) ? 'true' : 'false'; ?>;
+</script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="../js/map/geolocation.js"></script>
-<script src="../js/map/map.js"></script>
-<?php require('template/footer.phtml'); ?>
+<script type="module" src="../js/MediatorApp.js"></script>
+<?php require_once('template/footer.phtml'); ?>

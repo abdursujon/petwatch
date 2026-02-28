@@ -1,4 +1,4 @@
-export class SightingList{
+export class Validation{
     constructor(){
 
     }

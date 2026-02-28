@@ -1,45 +1,96 @@
 <?php
 require_once('Database.php');
+require_once('ViewSightingsData.php');
 require_once('LocationDataSets.php');
 
 /**
- * Handles creation, retrieval, updating, and deletion of pet sighting records.
- * Manages persistence of sightings and synchronizes related location data
- * using the locations dataset.
+ * Data access layer for retrieving and counting pet sightings.
+ * Supports filtered, sorted, and paginated queries by joining
+ * pets and sightings data and mapping results to SightingsData objects.
  */
-class CreateSightings {
-    private $_dbHandle;
+class SightingsDataSet
+{
+    protected $_dbHandle;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->_dbHandle = Database::getInstance()->getdbConnection();
     }
 
-    public function getLostPets(): array {
-        try {
-            $sql = "SELECT id, name, species, breed, photo_url
-                    FROM pets
-                    WHERE status = 'lost'
-                    ORDER BY name ASC";
-            $stmt = $this->_dbHandle->query($sql);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            throw new Exception('Database error fetching lost pets: ' . $e->getMessage());
+    /**
+     * fetchAllSightings method returns json_encoded data for front end to use purpose.
+     * <p>
+     *     1. Join pets with location and sightings table to get required pets data for ajax endpoints
+     *     2. Execute the query to get pet details and sightings.
+     *     3. Create an array variable to store executed data in while loop.
+     *     4. Echo the dataSet as json so front end can use the data.
+     * </p>
+     * @return array
+     */
+    public function fetchAllSightings()
+    {
+        $sqlQuery = "SELECT pets.*, locations.latitude, locations.longitude, locations.timestamp, 
+                            sightings.comment, sightings.user_id, sightings.pet_id
+             FROM pets
+             INNER JOIN locations ON pets.id = locations.pet_id
+             INNER JOIN sightings ON pets.id = sightings.pet_id";
+
+        $statement = $this->_dbHandle->prepare($sqlQuery);
+        $statement->execute();
+
+        $dataSet = [];
+        while ($row = $statement->fetch()) {
+            $dataSet[] = [
+                'id' => $row['id'],
+                'name' => $row['name'],
+                'species' => $row['species'],
+                'breed' => $row['breed'],
+                'color' => $row['color'],
+                'photo_url' => $row['photo_url'],
+                'status' => $row['status'],
+                'latitude' => $row['latitude'],
+                'longitude' => $row['longitude'],
+                'timestamp' => $row['timestamp'],
+                'comment' => $row['comment']
+            ];
         }
+        return $dataSet;
     }
 
-    public function recordSighting($petId, $userId, $comment, $latitude, $longitude): bool {
+    /**
+     * paginatedSightings() method reuse the data from fetchAllSightings() method to helps us build auto scrolled paginated list of all lost pets
+     * @param $limit
+     * @param $offset
+     * @return array
+     */
+    public function paginatedSightings($limit, $offset)
+    {
+        $allSightings = $this->fetchAllSightings();
+        return array_slice($allSightings, $offset, $limit);
+    }
+
+    /**
+     * recordSighting in database
+     * @param $petId
+     * @param $userId
+     * @param $comment
+     * @param $latitude
+     * @param $longitude
+     * @return bool
+     * @throws Exception
+     */
+    public function recordSighting($petId, $userId, $comment, $latitude, $longitude): bool
+    {
         try {
             $sql = "INSERT INTO sightings
-                    (pet_id, user_id, comment, latitude, longitude)
+                    (pet_id, user_id, comment)
                     VALUES
-                    (:pet_id, :user_id, :comment, :latitude, :longitude)";
+                    (:pet_id, :user_id, :comment)";
             $stmt = $this->_dbHandle->prepare($sql);
             $success = $stmt->execute([
                 ':pet_id' => $petId,
                 ':user_id' => $userId,
-                ':comment' => $comment,
-                ':latitude' => $latitude,
-                ':longitude' => $longitude
+                ':comment' => $comment
             ]);
 
             if ($success) {
@@ -54,7 +105,9 @@ class CreateSightings {
         }
     }
 
-    public function getSightingsByUser($userId): array {
+
+    public function getSightingsByUser($userId): array
+    {
         try {
             $sql = "SELECT
                         s.id,
@@ -62,11 +115,12 @@ class CreateSightings {
                         p.species,
                         p.photo_url,
                         s.comment,
-                        s.latitude,
-                        s.longitude,
-                        s.timestamp
+                        l.latitude,
+                        l.longitude,
+                        l.timestamp
                     FROM sightings s
                     JOIN pets p ON s.pet_id = p.id
+                    JOIN locations l ON s.pet_id = l.pet_id
                     WHERE s.user_id = :user_id
                     ORDER BY s.timestamp DESC";
             $stmt = $this->_dbHandle->prepare($sql);
@@ -78,7 +132,8 @@ class CreateSightings {
         }
     }
 
-    public function updateSighting($sightingId, $userId, $data): bool {
+    public function updateSighting($sightingId, $userId, $data): bool
+    {
         try {
             $allowed = ['comment', 'latitude', 'longitude'];
             $fields = [];
@@ -139,7 +194,8 @@ class CreateSightings {
         }
     }
 
-    public function deleteSighting($sightingId, $userId): bool {
+    public function deleteSighting($sightingId, $userId): bool
+    {
         try {
             $petStmt = $this->_dbHandle->prepare(
                 "SELECT pet_id FROM sightings
