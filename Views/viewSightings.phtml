@@ -1,22 +1,12 @@
 <?php
 require_once('template/header.phtml');
 ?>
+
 <div id="map" class="container-fluid"></div>
 <div class="container mt-5 mb-3">
     <!-- Search and Filters -->
     <form class="row g-2 align-items-center" role="search"
           action="viewSightings.php" method="get">
-
-        <div class="col-md-6 col-sm-12">
-            <div class="input-group">
-                <input type="search" class="form-control"
-                       placeholder="Search by pet name, species, comment, lat, long etc."
-                       name="search"
-                       value="<?= htmlspecialchars($view->searchTerm ?? '') ?>"
-                       aria-label="Search">
-                <button class="btn btn-success" type="submit">Search</button>
-            </div>
-        </div>
 
         <div class="col-md-6 col-sm-12">
             <div class="row g-2">

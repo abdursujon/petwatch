@@ -1,6 +1,6 @@
 Live Link: http://sickly-impostors.poseidon.salford.ac.uk/clientserver/viewSightings.php
 
-Feature One: Live petMap 
+11Feature One: Live petMap 
 ![Map design](images/img_1.png)
 1. Interactive live mapping
 2. It needs to allow users to list/view missing pets with their

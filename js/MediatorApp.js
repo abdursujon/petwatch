@@ -22,7 +22,7 @@ class MediatorApp {
 
     initialise(){
         this.petMap = new PetMap('map', this.defaultLat, this.defaultLong, 16);
-        this.petMap.loadMarkers('js/map/SightingsJsonData.php');
+        this.petMap.loadMarkers();
         this.geolocation.locate(
             (lat, long) => {
                 this.petMap.map.setView([lat, long], 16);
