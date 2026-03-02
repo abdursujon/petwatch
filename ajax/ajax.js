@@ -109,6 +109,7 @@ function showJsonHintOutput(str) {
     }
 }
 
+// use this as reference for live search
 function showJsonHintOutputTwo(str) {
     if (str.length == 0) {
         document.getElementById('jsonOutputTwo').innerHTML = "";

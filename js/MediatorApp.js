@@ -8,7 +8,7 @@
  * </p>
  */
 import {PetMap} from './map/PetMap.js';
-//import {SightingList} from './map/SightingList.js'
+import {SightingList} from './map/SightingList.js'
 // import {Validation} from './map/Validation.js'
 import {Geolocation} from './map/Geolocation.js'
 class MediatorApp {
@@ -16,12 +16,11 @@ class MediatorApp {
         this.geolocation = new Geolocation();
         this.defaultLat = 53.4631;
         this.defaultLong = -2.2913;
-        //this.sightingList = new SightingList('sighting-container');
-        //this.validation = new Validation();
+        this.petMap = new PetMap('map', this.defaultLat, this.defaultLong, 16, this.geolocation);
+        this.sightingList = new SightingList('sighting-container', this.petMap);
     }
 
     initialise(){
-        this.petMap = new PetMap('map', this.defaultLat, this.defaultLong, 16);
         this.petMap.loadMarkers();
         this.geolocation.locate(
             (lat, long) => {
@@ -32,8 +31,7 @@ class MediatorApp {
                 // Geolocation denied or browser does not support it, stays default value.
             }
         );
-        //this.sightingList.loadPaginatedSightings();
-        // this.validation.validateInput();
+        this.sightingList.loadSightings();
     }
 }
 

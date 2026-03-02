@@ -1,11 +1,12 @@
 export class PetMap {
-    constructor(elementId, lat, long, zoom) {
+    constructor(elementId, lat, long, zoom, geolocation) {
         this.map = L.map(elementId).setView([lat, long], zoom);
         this.popupOption = {"closeButton": false};
         this.markers = []; // stores all marker objects on the map
         this.allData = []; // stores all pet data from ajax
         this.sightingMode = false // tracks if user on sighting mode to add a new sighting
         this.initialTileLayer();
+        this.geolocation = geolocation;
     }
 
     initialTileLayer() {
@@ -57,7 +58,6 @@ export class PetMap {
 
             // Build popup HTML card, create a new sightings button only shows user is logged in.
             let markerText = `
-            <div id="pet-marker-fuck-off">
                <div class="pet-marker mb-4 mt-4">
                     <div><img src="${pets.photo_url}" alt="${pets.name}"/></div>
                     <p class="pet-name">${pets.name}</p>
@@ -70,8 +70,6 @@ export class PetMap {
                     <button type="submit" class="btn btn-primary add-sighting-btn"> Add A New Sighting </button>
                     ` : '<p class="text-muted">Log in to add a sighting</p>'}
                 </div>
-</div>
-             
             `;
 
             let marker = L.marker([pets.latitude, pets.longitude])
@@ -109,7 +107,7 @@ export class PetMap {
     async reverseGeocodeToHumanReadableLocation(lat, long) {
         try {
             let response = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json&addressdetails=1`
+                `js/map/ReverseGeocode.php?lat=${lat}&long=${long}`
             );
             let data = await response.json();
             let address = data.address;
@@ -188,6 +186,10 @@ export class PetMap {
         this.map.getContainer().style.position = 'relative';
         this.map.getContainer().appendChild(panel);
 
+        panel.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
         // Option 1: Click on the map to pick a location
         this.onMapClick = (e) =>{
             this.setSightingLocation(e.latlng.lat, e.latlng.lng);
@@ -195,7 +197,16 @@ export class PetMap {
         this.map.on('click', this.onMapClick);
 
         // Option 2: Use GPS current geolocation.
-        // Use Geolocation.js
+        document.getElementById('sighting-use-location').addEventListener('click', () =>{
+            this.geolocation.locate(
+                (lat, long) =>{
+                    this.setSightingLocation(lat, long);
+                },
+            () => {
+                  alert('Could not get your location. Please click on the map instead to choose a location.')
+                }
+            );
+        });
 
         // Post new sighting to viewSighting.php
         document.getElementById('sighting-submit').addEventListener('click', () => {
@@ -211,19 +222,15 @@ export class PetMap {
 
             // Send post request to record the sighting
             var sightingXhr = new XMLHttpRequest();
-            sightingXhr.open('POST', 'viewSightings.php', true);
+            sightingXhr.open('POST', 'createSighting.php', true);
             sightingXhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             sightingXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            sightingXhr.send('pet-id=' + this.sightingPetId
-                + '&sighting-comment=' +encodeURIComponent(comment)
-                + '&latitude=' + this.sightingLatLong.lat
-                + '&longitude=' + this.sightingLatLong.lng
-            );
 
             sightingXhr.onreadystatechange = () =>{
                 if(sightingXhr.readyState === 4){
                     if(sightingXhr.status === 200){
                         alert('Sighting added successfully.');
+                        this.loadMarkers();
                     } else {
                         alert('Failed to add sighting.')
                     }
@@ -231,6 +238,11 @@ export class PetMap {
                 }
             };
 
+            sightingXhr.send('pet_id=' + this.sightingPetId
+                + '&sighting-comment=' +encodeURIComponent(comment)
+                + '&latitude=' + this.sightingLatLong.lat
+                + '&longitude=' + this.sightingLatLong.lng
+            );
         });
 
         document.getElementById('sighting-cancel').addEventListener('click', () =>{
