@@ -10,10 +10,10 @@
     <option name="highlightLevel" value="WARNING" />
     <option name="transferred" value="true" />
   </component>
-  <component name="PhpCodeSniffer">
-    <phpcs_settings>
-      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="35aa2ebf-161a-4a94-854f-7e4312772905" timeout="30000" />
-    </phpcs_settings>
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="/opt/lampp/bin" />
+    </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.1">
     <option name="suggestChangeDefaultLanguageLevel" value="false" />

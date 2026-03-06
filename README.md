@@ -69,8 +69,9 @@ poseidon ssh connection:
 terminal command: ssh -L 3306:localhost:3306 username@poseidon.salford.ac.uk
 and in database: conect with mariadb pass 
 
+
+db_password="pass"
 run the server:  php -S localhost:8000  
-export db_password="pass"
 
 File that chaged: 
 1. ViewSighints.phtml

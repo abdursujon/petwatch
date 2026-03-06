@@ -1,1 +1,0 @@
-<input type="text" name="sighting-comment" class="w-100 mb-2" placeholder="Where did you see the pet?" required/>

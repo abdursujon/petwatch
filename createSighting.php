@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('Models/SightingsDataSet.php');
+require_once('Models/SightingsDataSets.php');
 
 $view = new stdClass();
 $view->title = "sightings";
@@ -14,7 +14,7 @@ exit();
 }$userId = (int)$_SESSION['user_id'];
 
 
-$sightingsDataSet = new SightingsDataSet();
+$sightingsDataSet = new SightingsDataSets();
 
 /**
  * Validates and sanitizes sighting input.
@@ -56,12 +56,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'
     $petId = filter_input(INPUT_POST, 'pet_id', FILTER_SANITIZE_NUMBER_INT);
     $comment = trim($_POST['sighting-comment'] ?? '');
     $lat = $_POST['latitude'] ?? null;
-    $long = $_POST['longitude'] ?? null;
+    $lng = $_POST['longitude'] ?? null;
 
-    [$comment, $lat, $long, $errors] = validateSightingsData([
+    [$comment, $lat, $lng, $errors] = validateSightingsData([
         'comment'   => $comment,
         'latitude'  => $lat,
-        'longitude' => $long
+        'longitude' => $lng
     ]);
 
     if ($errors){
@@ -71,7 +71,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'
 
     try{
         $success = $sightingsDataSet->recordSighting(
-            $petId, $userId, $comment, $lat, $long
+            $petId, $userId, $comment, $lat, $lng
         );
         echo json_encode(['success'=> $success]);
     } catch (Exception $e){
@@ -99,22 +99,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if (isset($_POST['submit_sighting'])) {
             $petId = filter_input(INPUT_POST, 'pet_id', FILTER_SANITIZE_NUMBER_INT);
-            [$comment, $lat, $long, $errors] = validateSightingsData($_POST);
+            [$comment, $lat, $lng, $errors] = validateSightingsData($_POST);
             if ($errors) {
                 $view->errorMessage = implode(' ', $errors);
             } else {
-                $success = $sightingsDataSet->recordSighting($petId, $userId, $comment, $lat, $long);
+                $success = $sightingsDataSet->recordSighting($petId, $userId, $comment, $lat, $lng);
                 $view->successMessage = $success ? "Sighting added." : "Failed to add sighting.";
             }
         } elseif (isset($_POST['update_sighting'])) {
             $id = (int)$_POST['update_sighting'];
-            [$comment, $lat, $long, $errors] = validateSightingsData($_POST['sightings'][$id] ?? []);
+            [$comment, $lat, $lng, $errors] = validateSightingsData($_POST['sightings'][$id] ?? []);
 
             if($errors){
                 $view->errorMessage = implode('', $errors);
             }
             else {
-                $data = ['comment' => $comment, 'latitude' => $lat, 'longitude' => $long];
+                $data = ['comment' => $comment, 'latitude' => $lat, 'longitude' => $lng];
                 $success = $sightingsDataSet->updateSighting($id, $userId, $data);
                 $view->successMessage = $success ? "Sighting updated." : "Failed to update sighting.";
             }

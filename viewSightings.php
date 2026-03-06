@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once('Models/SightingsDataSet.php');
+require_once('Models/SightingsDataSets.php');
 $view = new stdClass();
 $view->title = "view-sightings";
-$sightingsDataSet = new SightingsDataSet();
+$sightingsDataSet = new SightingsDataSets();
 
 
 /**

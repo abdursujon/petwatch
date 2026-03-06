@@ -11,27 +11,38 @@ import {PetMap} from './map/PetMap.js';
 import {SightingList} from './map/SightingList.js'
 // import {Validation} from './map/Validation.js'
 import {Geolocation} from './map/Geolocation.js'
+import {SightingsMapAndListAjax} from "./map/SightingsMapAndListAjax.js";
+
 class MediatorApp {
     constructor() {
+        this.ajax = new SightingsMapAndListAjax()
         this.geolocation = new Geolocation();
         this.defaultLat = 53.4631;
-        this.defaultLong = -2.2913;
-        this.petMap = new PetMap('map', this.defaultLat, this.defaultLong, 16, this.geolocation);
-        this.sightingList = new SightingList('sighting-container', this.petMap);
+        this.defaultLng = -2.2913;
+        this.petMap = new PetMap('map', this.defaultLat, this.defaultLng, 16, this.geolocation, this.ajax);
+        this.sightingList = new SightingList('sighting-container', this.petMap, this.ajax);
     }
 
-    initialise(){
-        this.petMap.loadMarkers();
-        this.geolocation.locate(
-            (lat, long) => {
-                this.petMap.map.setView([lat, long], 16);
-                this.geolocation.showUserLocation(this.petMap.map, lat, long);
+    initialise() {
+        this.ajax.fetchSightings(
+            (data) => {
+                this.petMap.setPetDataOnMap(data);
+                this.sightingList.setSightingData(data);
             },
-            () =>{
+            (error) => {
+                console.log(error);
+            }
+        );
+
+        this.geolocation.locate(
+            (lat, lng) => {
+                this.petMap.map.setView([lat, lng], 16);
+                this.geolocation.showUserLocation(this.petMap.map, lat, lng);
+            },
+            () => {
                 // Geolocation denied or browser does not support it, stays default value.
             }
         );
-        this.sightingList.loadSightings();
     }
 }
 

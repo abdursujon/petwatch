@@ -1,26 +1,18 @@
 export class SightingList{
-    constructor(containerId, petMap){
+    constructor(containerId, petMap, ajax){
         this.container = document.getElementById(containerId);
         this.petMap = petMap;
         this.allData = [];
         this.displayedCount = 0;
         this.nextSizeOfBatchLoadedSightings = 20;
+        this.ajax = ajax;
     }
 
     // Ajax endpoint 3
-    loadSightings(){
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'js/map/SightingsJsonData.php', true);
-
-        xhr.onreadystatechange = () => {
-            if(xhr.readyState === 4 && xhr.status === 200){
-                this.allData = JSON.parse(xhr.responseText);
-                this.renderCards();
-                this.initialiseInfiniteScroll();
-            }
-        }
-
-        xhr.send();
+    setSightingData(data) {
+        this.allData = data;
+        this.renderCards();
+        this.initialiseInfiniteScroll();
     }
 
     // render all sightings to the page
@@ -47,14 +39,8 @@ export class SightingList{
             col.appendChild(card)
             this.container.appendChild(col);
 
-            // reuse reverseGeocode from PetMap.js class
             let addressSpan = card.querySelector('.sighting-address');
-            let delay = index * 1100;
-            setTimeout(() => {
-                this.petMap.reverseGeocodeToHumanReadableLocation(pet.latitude, pet.longitude).then(address => {
-                    addressSpan.textContent = address;
-                });
-            },delay);
+            addressSpan.textContent = pet.address || 'Unknown location';
 
             // Reuse sighting mode from PetMap.js class
             if(isLoggedIn){

@@ -1,7 +1,7 @@
 export class Geolocation{
     constructor(){
         this.lat = null;
-        this.long = null;
+        this.lng = null;
     }
 
     locate(onSuccess, onError){
@@ -22,8 +22,8 @@ export class Geolocation{
     }
 
     // Add a blue dot on the map at the user location
-    showUserLocation(map, lat, long){
-        L.circleMarker([lat, long], {
+    showUserLocation(map, lat, lng){
+        L.circleMarker([lat, lng], {
             radius: 8,
             fillColor: '#2196F3',
             weight:2,
