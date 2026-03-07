@@ -1,6 +1,7 @@
 <?php
 require_once('Database.php');
 require_once('SightingsData.php');
+require_once('SightingsDataSets.php');
 require_once('LocationDataSets.php');
 
 /**
@@ -27,7 +28,7 @@ class CreateSightings
      * @return bool
      * @throws Exception
      */
-    public function recordSighting($petId, $userId, $comment, $latitude, $longitude): bool
+    public function recordSighting($petId, $userId, $comment, $latitude, $longitude, $address): bool
     {
         try {
             $sql = "INSERT INTO sightings
@@ -44,7 +45,7 @@ class CreateSightings
             if ($success) {
                 $locationDataSet = new LocationDataSet();
                 $timestamp = date('Y-m-d H:i:s');
-                $locationDataSet->insertLocation($petId, $latitude, $longitude, $timestamp);
+                $locationDataSet->insertLocation($petId, $latitude, $longitude, $timestamp, $address);
             }
 
             return $success;

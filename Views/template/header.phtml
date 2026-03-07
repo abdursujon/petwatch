@@ -1,3 +1,11 @@
+<script>
+    const ajaxToken = "<?php
+            if (!isset($_SESSION['ajaxToken'])) {
+                $_SESSION['ajaxToken'] = substr(str_shuffle(MD5(microtime())), 0, 20);
+            }
+            echo $_SESSION['ajaxToken'];
+            ?>";
+</script>
 <?php
 // Only start a session when one doesn't exist yet
 if (session_status() === PHP_SESSION_NONE) {
@@ -32,9 +40,10 @@ require_once(__DIR__ . '/../../Models/Database.php')
     <link href="css/login.css" rel="stylesheet">
     <link href="css/sightings.css" rel="stylesheet">
     <link rel="stylesheet" href="css/map.css">
-
+    <link rel="stylesheet" href="css/live-search.css">
     <title>petWatch</title>
 </head>
+
 
 <!-- Page container for layout styling -->
 <div class="page-container">
@@ -87,23 +96,17 @@ require_once(__DIR__ . '/../../Models/Database.php')
                         </li>
                     </ul>
 
-                    <!-- Header search form -->
-                    <form class="w-100 w-lg-50 my-2 my-lg-0"
-                          role="search"
-                          action="viewSightings.php"
-                          method="get"
-                          style="max-width: 400px;">
+                    <!-- Header live search -->
+                    <div class="search-wrapper w-100 w-lg-50 my-2 my-lg-0" style="max-width: 400px; position: relative;">
                         <div class="input-group w-100">
-                            <input type="search" name="search"
+                            <input type="search" id="live-search-input"
                                    class="form-control py-2 px-3"
                                    placeholder="Search by pet name, species type, etc."
-                                   value="<?= htmlspecialchars($view->searchTerm ?? '') ?>"
+                                   autocomplete="off"
                                    aria-label="Search">
-                            <button class="btn btn-success px-4"
-                                    type="submit">Search
-                            </button>
                         </div>
-                    </form>
+                        <div id="live-search-results" class="search-results-dropdown"></div>
+                    </div>
 
                     <ul class="navbar-nav d-flex mb-2 mt-3 mt-lg-0 mb-lg-0">
                         <!-- If logged in, show user and logout -->
@@ -139,6 +142,6 @@ require_once(__DIR__ . '/../../Models/Database.php')
             </div>
         </nav>
     </header>
-
+    <script type="module" src="js/live-search/LiveSearchMediatorApp.js"></script>
     <main class="flex-shrink-0">
 

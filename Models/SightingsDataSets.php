@@ -29,7 +29,7 @@ class SightingsDataSets
      */
     public function fetchAllSightings()
     {
-        $sqlQuery = "SELECT pets.*, locations.latitude, locations.longitude, locations.timestamp, 
+        $sqlQuery = "SELECT pets.*, locations.latitude, locations.longitude, locations.timestamp, locations.address,
                             sightings.comment, sightings.user_id, sightings.pet_id
              FROM pets
              INNER JOIN locations ON pets.id = locations.pet_id
@@ -51,6 +51,7 @@ class SightingsDataSets
                 'latitude' => $row['latitude'],
                 'longitude' => $row['longitude'],
                 'timestamp' => $row['timestamp'],
+                'address' => $row['address'],
                 'comment' => $row['comment']
             ];
         }

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('Models/SightingsDataSets.php');
+require_once('Models/CreateSightings.php');
 
 $view = new stdClass();
 $view->title = "sightings";
@@ -14,7 +14,7 @@ exit();
 }$userId = (int)$_SESSION['user_id'];
 
 
-$sightingsDataSet = new SightingsDataSets();
+$createSighting = new createSightings();
 
 /**
  * Validates and sanitizes sighting input.
@@ -24,6 +24,7 @@ function validateSightingsData($input): array {
     $comment = trim($input['comment'] ?? '');
     $lat = $input['latitude'] ?? null;
     $lng = $input['longitude'] ?? null;
+    $address = $input['address'] ?? null;
     $errors = [];
 
     if (!is_numeric($lat) || !is_numeric($lng)) {
@@ -43,7 +44,7 @@ function validateSightingsData($input): array {
     }
     $comment = htmlspecialchars($comment, ENT_QUOTES, 'UTF-8');
 
-    return [$comment, $lat, $lng, $errors];
+    return [$comment, $lat, $lng, $address, $errors];
 }
 
 
@@ -57,11 +58,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'
     $comment = trim($_POST['sighting-comment'] ?? '');
     $lat = $_POST['latitude'] ?? null;
     $lng = $_POST['longitude'] ?? null;
+    $address = trim($_POST['address'] ?? '');
 
-    [$comment, $lat, $lng, $errors] = validateSightingsData([
+    [$comment, $lat, $lng, $address, $errors] = validateSightingsData([
         'comment'   => $comment,
         'latitude'  => $lat,
-        'longitude' => $lng
+        'longitude' => $lng,
+        'address'   => $address
     ]);
 
     if ($errors){
@@ -70,8 +73,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'
     }
 
     try{
-        $success = $sightingsDataSet->recordSighting(
-            $petId, $userId, $comment, $lat, $lng
+        $success = $createSighting-> recordSighting(
+            $petId, $userId, $comment, $lat, $lng, $address
         );
         echo json_encode(['success'=> $success]);
     } catch (Exception $e){
@@ -99,11 +102,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if (isset($_POST['submit_sighting'])) {
             $petId = filter_input(INPUT_POST, 'pet_id', FILTER_SANITIZE_NUMBER_INT);
-            [$comment, $lat, $lng, $errors] = validateSightingsData($_POST);
+            [$comment, $lat, $lng, $address, $errors] = validateSightingsData($_POST);
             if ($errors) {
                 $view->errorMessage = implode(' ', $errors);
             } else {
-                $success = $sightingsDataSet->recordSighting($petId, $userId, $comment, $lat, $lng);
+                $success = $createSighting->recordSighting($petId, $userId, $comment, $lat, $lng, $address);
                 $view->successMessage = $success ? "Sighting added." : "Failed to add sighting.";
             }
         } elseif (isset($_POST['update_sighting'])) {
@@ -115,12 +118,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             else {
                 $data = ['comment' => $comment, 'latitude' => $lat, 'longitude' => $lng];
-                $success = $sightingsDataSet->updateSighting($id, $userId, $data);
+                $success = $createSighting->updateSighting($id, $userId, $data);
                 $view->successMessage = $success ? "Sighting updated." : "Failed to update sighting.";
             }
         } elseif (isset($_POST['delete_sighting'])) {
             $sightingId = (int)$_POST['delete_sighting'];
-            $success = $sightingsDataSet->deleteSighting($sightingId, $userId);
+            $success = $createSighting->deleteSighting($sightingId, $userId);
             $view->successMessage = $success ? "Sighting deleted. " : "Failed to delete sighting, try again.";
         }
     } catch (Exception $e) {

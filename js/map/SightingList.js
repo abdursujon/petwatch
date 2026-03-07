@@ -6,18 +6,65 @@ export class SightingList{
         this.displayedCount = 0;
         this.nextSizeOfBatchLoadedSightings = 20;
         this.ajax = ajax;
+        this.initialiseFilters();
     }
 
-    // Ajax endpoint 3
+
     setSightingData(data) {
         this.allData = data;
-        this.renderCards();
+        this.filteredData = [...data];
+        this.applyFilters();
         this.initialiseInfiniteScroll();
+    }
+
+    initialiseFilters(){
+        document.getElementById('filter-species').addEventListener('change', () =>{
+            this.applyFilters();
+        });
+        document.getElementById('filter-name').addEventListener('change', () => {
+            this.applyFilters();
+        });
+
+        document.getElementById('filter-date').addEventListener('change', () => {
+            this.applyFilters();
+        });
+    }
+
+    applyFilters(){
+        let species = document.getElementById('filter-species').value;
+        let nameSort = document.getElementById('filter-name').value;
+        let dateSort = document.getElementById('filter-date').value;
+
+        // sort by species
+        this.filteredData = this.allData.filter(pet => {
+            if(species === 'all') return true;
+            return pet.species.toLowerCase() === species;
+        });
+
+        // Sort by name
+        if(nameSort === 'a-z'){
+            this.filteredData.sort((a, b) => a.name.localeCompare(b.name));
+        } else if(nameSort === 'z-a'){
+            this.filteredData.sort((a, b) => b.name.localeCompare(a.name));
+        }
+
+        // Sort by date
+        if(dateSort === 'newest'){
+            this.filteredData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        } else if(dateSort === 'oldest') {
+            this.filteredData.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        }
+
+        // Reset the list and re-render the pet sightings
+        this.container.innerHTML = '';
+        this.displayedCount = 0;
+        this.renderCards();
+
     }
 
     // render all sightings to the page
     renderCards(){
-        let batch = this.allData.slice(this.displayedCount, this.displayedCount + this.nextSizeOfBatchLoadedSightings);
+        let batch = this.filteredData.slice(this.displayedCount, this.displayedCount + this.nextSizeOfBatchLoadedSightings);
 
         batch.forEach((pet, index) => {
             let col = document.createElement('div');
@@ -57,7 +104,7 @@ export class SightingList{
     initialiseInfiniteScroll(){
         window.addEventListener('scroll', () => {
             if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 200){
-                if(this.displayedCount < this.allData.length){
+                if(this.displayedCount < this.filteredData.length){
                     this.renderCards();
                 }
             }

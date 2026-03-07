@@ -1,0 +1,91 @@
+.search-results-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.search-result-item:hover {
+    background: #f0f0f0;
+}
+
+.search-result-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+.search-result-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-result-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.search-result-species {
+    font-size: 0.85em;
+    color: #888;
+}
+
+.search-result-address {
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+.search-no-results {
+    padding: 12px;
+    text-align: center;
+    color: #999;
+}
+
+.search-view-all {
+    padding: 10px 12px;
+    text-align: center;
+    color: #0d6efd;
+    cursor: pointer;
+    font-weight: 500;
+    border-top: 1px solid #eee;
+}
+
+.search-view-all:hover {
+    background: #f0f0f0;
+}
+
+.search-load-more {
+    padding: 10px 12px;
+    text-align: center;
+    color: #0d6efd;
+    cursor: pointer;
+    border-top: 1px solid #eee;
+}
+
+.search-load-more:hover {
+    background: #f0f0f0;
+}
+
+.search-result-comment {
+    font-size: 0.8em;
+    color: #666;
+    font-style: italic;
+}

@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/../../ValidateAjaxToken.php');
+validateAjaxToken();
 session_start();
 
 // Validate input

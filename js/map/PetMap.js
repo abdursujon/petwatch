@@ -24,9 +24,14 @@ export class PetMap {
     setPetDataOnMap(data) {
         this.allData = data;
         this.renderVisibleMarkers();
-        this.map.on('moveend', () => {
-            this.renderVisibleMarkers();
-        });
+
+        // Only add the listener once, not every time data is set
+        if (!this.moveEndListenerAdded) {
+            this.map.on('moveend', () => {
+                this.renderVisibleMarkers();
+            });
+            this.moveEndListenerAdded = true;
+        }
     }
 
     /**
@@ -92,6 +97,7 @@ export class PetMap {
             if (isLoggedIn) {
                 this.onPopupSightingButtonClick(marker);
             }
+            marker.petId = pets.id;
             this.markers.push(marker);
         });
     }
@@ -122,11 +128,22 @@ export class PetMap {
 
         // Close the pet popup so user can interact with the pet map
         this.map.closePopup();
+        this.markers.forEach(marker => {
+            marker.off('mouseover');
+            marker.closePopup();
+        });
+
+        // Fetch the pet data chose by user to show it's name and photo in the panel
+        let pet = this.allData.find(p => p.id == petId);
 
         // Create floating panel UI on top of the map
         let panel = document.createElement('div');
         panel.id = 'sighting-panel';
         panel.innerHTML = `
+             <div class="sighting-pet-info ">
+                <img src="${pet.photo_url}" alt="${pet.name}" style="width: 120px" />
+                <h5>${pet.name}</h5>
+             </div>
              <h5>Create New Sighting</h5>
              <p>Click on the map to report pet location.</p>
              <button id="sighting-use-location" class="btn btn-outline-primary btn-sm mb-2 w-100">
@@ -187,10 +204,9 @@ export class PetMap {
                             let result = JSON.parse(sightingXhr.responseText);
                             if (result.success) {
                                 alert('Sighting added successfully.');
-                                this.ajax.fetchSightings((data) => {
-                                    this.setPetDataOnMap(data);
-                                }, () => {
-                                });
+                                if (this.onSightingAdded) {
+                                    this.onSightingAdded();
+                                }
                             } else {
                                 alert('Failed to add sighting.')
                             }

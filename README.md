@@ -28,14 +28,14 @@ Live Link: http://sickly-impostors.poseidon.salford.ac.uk/clientserver/viewSight
    well structured OO code.
 
 Requirements for Map
-1. OO & Design: Cohesive JS/PHP OO architecture with clear patterns and re-use.
-2. AJAX: 3+ high-quality, efficient endpoints with robust error handling and caching where appropriate.
+1. OO & Design: Cohesive JS/PHP OO architecture with clear patterns and re-use. x
+2. AJAX: 3+ high-quality, efficient endpoints with robust error handling and caching where appropriate. x
 3. Security: Strong input validation, CSRF/URL tokens, output encoding; shows threat-modelling decisions.
-4. Data: JSON/XML via extended DB classes; clear schemas.
+4. Data: JSON/XML via extended DB classes; clear schemas. x
 5. Map/UX: Highly sophisticated, real-time updates, smooth interactions (e.g., list to petMap focus, clustering), reliable geolocation, fully responsive; scales to 100s of items.
 6. Comments: Consistent, meaningful, maintainable.
 7. Strictly no prohibited tools; exemplary database usage and performance tuning.
-x 8. Hosted on poseidon.salford.ac.uk using a MariaDB database 
+8. Hosted on poseidon.salford.ac.uk using a MariaDB database 
 
 Feature Live Search
 1. AJAX implementation of live search feature and results for users (based on material
@@ -44,18 +44,18 @@ Feature Live Search
    allow effective narrowing of results to a small number from a large dataset.
 
 Requirements for Live Search
-1. OO & Design: Elegant, reusable classes; clear pattern.
-2. AJAX: Multiple endpoints (3+ if appropriate) enabling sophisticated interactions (e.g., debounced live search with ranking).
-4. Security: Comprehensive validation and tokenisation; robust input sanitisation.
-5. Data: JSON/XML contracts; paginated/filtered payloads.
-6. Performance: Excellent memory and network efficiency for 100s+ items.
-7. Comments: Consistently excellent. No prohibited tools.
+1. OO & Design: Elegant, reusable classes; clear pattern. x
+2. AJAX: Multiple endpoints (3+ if appropriate) enabling sophisticated interactions (e.g., debounced live search with ranking). x
+4. Security: Comprehensive validation and tokenisation; robust input sanitisation. x
+5. Data: JSON/XML contracts; paginated/filtered payloads. x
+6. Performance: Excellent memory and network efficiency for 100s+ items. x
+7. Comments: Consistently excellent. No prohibited tools. 
 8. Hosted on poseidon.salford.ac.uk using a MariaDB database
 
 Tech requirments 
 1. DOM 
 2. Eventhandler and listener 
-3. Validation 
+3. SearchValidation 
 4. Class & OOP
 5. Ajax
 6. Json
@@ -78,3 +78,6 @@ File that chaged:
 2. SightingsMapDataSet.php 
 3. createsighting controller 
 source ~/.bashrc
+
+Bug:
+1. Address not loading in the database

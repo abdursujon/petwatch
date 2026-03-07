@@ -4,7 +4,6 @@
  * 2. Endponit two: submitNewSighting() handles creating new sighting data
  * 3. Endpoint three:  reverseLatLngToHumanReadableAddress handles reversering location data to human readable location data object
  */
-
 export class SightingsMapAndListAjax{
     constructor() {
         this.cachedSightings = null;
@@ -23,7 +22,7 @@ export class SightingsMapAndListAjax{
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'js/map/ajax-php-call/SightingsJsonData.php', true);
+        xhr.open('GET', 'js/map/ajax-php-call/SightingsJsonData.php?token=' + ajaxToken, true);
         xhr.onreadystatechange = () => {
             if(xhr.readyState === 4){
                 if(xhr.status !== 200){
@@ -71,11 +70,13 @@ export class SightingsMapAndListAjax{
             }
         };
         xhr.send(
-            'pet-id=' + petId
+            'pet_id=' + petId
             + '&sighting-comment=' + encodeURIComponent(comment)
             + '&latitude=' + lat
             + '&longitude=' + lng
-        )
+            + '&address=' + encodeURIComponent(this.sightingAddress || '')
+            + '&token=' + ajaxToken
+        );
     }
 
     /**
@@ -85,7 +86,7 @@ export class SightingsMapAndListAjax{
      */
     reverseLatLngToHumanReadableAddress(lat, lng, onSuccess, onError){
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'js/map/ajax-php-call/ReverseLatLngToHumanReadableAddress.php?lat=' + lat + '&lng=' + lng, true);
+        xhr.open('GET', 'js/map/ajax-php-call/ReverseLatLngToHumanReadableAddress.php?lat=' + lat + '&lng=' + lng + '&token=' + ajaxToken, true);
         xhr.onreadystatechange = () => {
             if(xhr.readyState === 4){
                 if(xhr.status !== 200){

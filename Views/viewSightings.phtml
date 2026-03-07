@@ -3,6 +3,33 @@ require_once('template/header.phtml');
 ?>
 
 <div id="map" class="container-fluid"></div>
+<div class="container mt-4">
+    <div class="row g-2 align-items-center">
+        <div class="col"><h1>Apply Filters</h1></div>
+        <div class="col-auto">
+            <select id="filter-species" class="form-select">
+                <option value="all">All Species</option>
+                <option value="dog">Dog</option>
+                <option value="cat">Cat</option>
+                <option value="bird">Bird</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <select id="filter-name" class="form-select">
+                <option value="none">Sort by Name</option>
+                <option value="a-z">A - Z</option>
+                <option value="z-a">Z - A</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <select id="filter-date" class="form-select">
+                <option value="none">Sort by Date</option>
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+            </select>
+        </div>
+    </div>
+</div>
 <div class="container mt-5 mb-3">
     <div class="row" id="sighting-container"></div>
 </div>
@@ -11,5 +38,5 @@ require_once('template/header.phtml');
  const isLoggedIn = <?php echo !empty($_SESSION['loggedin']) ? 'true' : 'false'; ?>;
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="../js/MediatorApp.js"></script>
+<script type="module" src="../js/map/MapMediatorApp.js"></script>
 <?php require_once('template/footer.phtml'); ?>

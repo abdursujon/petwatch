@@ -8,7 +8,7 @@
 class SightingsData {
     protected $_pet_name, $_pet_species, $_pet_status,
               $_pet_images, $_comment, $_latitude,
-              $_longitude, $_timestamp;
+              $_longitude, $_timestamp, $_address;
 
     public function __construct($dbRow) {
         $this->_pet_name = $dbRow['name'];
@@ -19,6 +19,7 @@ class SightingsData {
         $this->_latitude = $dbRow['latitude'];
         $this->_longitude = $dbRow['longitude'];
         $this->_timestamp = $dbRow['timestamp'];
+        $this->_address = $dbRow['address'];
     }
 
     public function getPetName() {
@@ -51,5 +52,9 @@ class SightingsData {
 
     public function getSightingsTimestamp() {
         return $this->_timestamp;
+    }
+
+    public function getSightingsAddress() {
+        return $this->_address;
     }
 }

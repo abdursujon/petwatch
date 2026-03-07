@@ -6,7 +6,7 @@ export class Geolocation{
 
     locate(onSuccess, onError){
         if(!navigator.geolocation){
-           // If geolocation is not allowed or browser does not support we call this onError() function in MediatorApp.js to default to manchester.
+           // If geolocation is not allowed or browser does not support we call this onError() function in MapMediatorApp.js to default to manchester.
            onError();
            return;
         }
