@@ -27,6 +27,10 @@ main > .container {
     color: #cccccc;
 }
 
+.nav-item a{
+    color:white!important;
+}
+
 .nav-link:hover {
     text-decoration: underline;
 }

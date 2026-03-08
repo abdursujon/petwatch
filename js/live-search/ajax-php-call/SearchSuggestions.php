@@ -8,8 +8,8 @@ header('Content-Type: application/json');
 $query = trim($_GET['q'] ?? '');
 
 if (strlen($query) < 2) {
-    echo json_encode([]);
-    exit();
+  echo json_encode([]);
+  exit();
 }
 
 $query = htmlspecialchars($query, ENT_QUOTES, 'UTF-8');

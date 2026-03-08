@@ -8,8 +8,8 @@ require_once('Models/UserAuthentication.php');
  */
 $userAuthentication = new UserAuthentication();
 $rows = $userAuthentication->hasUserPassword(
-    'O7m!eX#2vLp9@zFq',
-    'U$4PzN!w8Hq@1rBx'
+  'O7m!eX#2vLp9@zFq',
+  'U$4PzN!w8Hq@1rBx'
 );
 
 echo "Updated password hashes for $rows users.";

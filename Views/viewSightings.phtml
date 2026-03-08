@@ -4,39 +4,39 @@ require_once('template/header.phtml');
 
 <div id="map" class="container-fluid"></div>
 <div class="container">
-    <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-auto"><h3 class="mb-2 mb-md-0">Apply Filters</h3></div>
-        <div class="col-12 col-sm-4 col-md">
-            <select id="filter-species" class="form-select">
-                <option value="all">All Species</option>
-                <option value="dog">Dog</option>
-                <option value="cat">Cat</option>
-                <option value="bird">Bird</option>
-            </select>
-        </div>
-        <div class="col-6 col-sm-4 col-md">
-            <select id="filter-name" class="form-select">
-                <option value="none">Sort by Name</option>
-                <option value="a-z">A - Z</option>
-                <option value="z-a">Z - A</option>
-            </select>
-        </div>
-        <div class="col-6 col-sm-4 col-md">
-            <select id="filter-date" class="form-select">
-                <option value="none">Sort by Date</option>
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-            </select>
-        </div>
+  <div class="row g-2 align-items-center">
+    <div class="col-12 col-md-auto"><h3 class="mb-2 mb-md-0">Apply Filters</h3></div>
+    <div class="col-12 col-sm-4 col-md">
+      <select id="filter-species" class="form-select">
+        <option value="all">All Species</option>
+        <option value="dog">Dog</option>
+        <option value="cat">Cat</option>
+        <option value="bird">Bird</option>
+      </select>
     </div>
+    <div class="col-6 col-sm-4 col-md">
+      <select id="filter-name" class="form-select">
+        <option value="none">Sort by Name</option>
+        <option value="a-z">A - Z</option>
+        <option value="z-a">Z - A</option>
+      </select>
+    </div>
+    <div class="col-6 col-sm-4 col-md">
+      <select id="filter-date" class="form-select">
+        <option value="none">Sort by Date</option>
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+      </select>
+    </div>
+  </div>
 
 </div>
 <div class="container mb-3">
-    <div class="row" id="sighting-container"></div>
+  <div class="row" id="sighting-container"></div>
 </div>
 <!--Allow java script to know wether a user is logged in. Without this javascript does not know if a user is logged in. -->
 <script>
- const isLoggedIn = <?php echo !empty($_SESSION['loggedin']) ? 'true' : 'false'; ?>;
+    const isLoggedIn = <?php echo !empty($_SESSION['loggedin']) ? 'true' : 'false'; ?>;
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>

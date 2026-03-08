@@ -83,3 +83,33 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
+
+.user-pulse {
+    animation: pulse-ring 2s ease-out infinite;
+}
+.user-location-popup .leaflet-popup-content-wrapper {
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+    border: 2px solid #2196F3;
+}
+
+.user-location-popup .leaflet-popup-tip {
+    border-top-color: #2196F3;
+}
+
+.user-location-popup .leaflet-popup-content {
+    margin: 4px 8px;
+}
+
+@keyframes pulse-ring {
+    0% {
+        stroke-width: 1;
+        stroke-opacity: 0.6;
+        fill-opacity: 0.3;
+    }
+    100% {
+        stroke-width: 20;
+        stroke-opacity: 0;
+        fill-opacity: 0;
+    }
+}

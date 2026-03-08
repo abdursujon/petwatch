@@ -7,34 +7,37 @@ require_once('LocationData.php');
  * Responsible for inserting and synchronizing location data
  * derived from pet sightings into the locations table.
  */
-class LocationDataSet {
-    private $_dbHandle;
+class LocationDataSet
+{
+  private $_dbHandle;
 
-    public function __construct() {
-        $this->_dbHandle = Database::getInstance()->getdbConnection();
-    }
+  public function __construct()
+  {
+    $this->_dbHandle = Database::getInstance()->getdbConnection();
+  }
 
-    public function insertLocation(
-        $petId, $latitude, $longitude, $timestamp, $address = null, $sightingId = null
-    ): bool {
-        try {
-            $sql = "INSERT INTO locations
+  public function insertLocation(
+    $petId, $latitude, $longitude, $timestamp, $address = null, $sightingId = null
+  ): bool
+  {
+    try {
+      $sql = "INSERT INTO locations
                     (pet_id, latitude, longitude, timestamp, address, sighting_id)
                     VALUES
                     (:pet_id, :latitude, :longitude, :timestamp, :address, :sightingId)";
-            $stmt = $this->_dbHandle->prepare($sql);
-            return $stmt->execute([
-                ':pet_id' => $petId,
-                ':latitude' => $latitude,
-                ':longitude' => $longitude,
-                ':timestamp' => $timestamp,
-                ':address' => $address,
-                ':sightingId' => $sightingId
-            ]);
-        } catch (PDOException $e) {
-            throw new Exception(
-                "Error inserting location: " . $e->getMessage()
-            );
-        }
+      $stmt = $this->_dbHandle->prepare($sql);
+      return $stmt->execute([
+        ':pet_id' => $petId,
+        ':latitude' => $latitude,
+        ':longitude' => $longitude,
+        ':timestamp' => $timestamp,
+        ':address' => $address,
+        ':sightingId' => $sightingId
+      ]);
+    } catch (PDOException $e) {
+      throw new Exception(
+        "Error inserting location: " . $e->getMessage()
+      );
     }
+  }
 }
