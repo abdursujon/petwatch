@@ -1,17 +1,25 @@
+import {MapAndSightingDataValidation} from './MapAndSightingDataValidation.js';
+
 export class PetMap {
     constructor(elementId, lat, lng, zoom, geolocation, ajax) {
-        this.map = L.map(elementId).setView([lat, lng], zoom);
+        this.map = L.map(elementId, { maxZoom: 19 }).setView([lat, lng], zoom);
         this.popupOption = {"closeButton": false};
         this.markers = []; // stores all marker objects on the map
         this.allData = []; // stores all pet data from ajax
         this.sightingMode = false // tracks if user on sighting mode to add a new sighting
+        this.clusterGroup = L.markerClusterGroup();
+        this.map.addLayer(this.clusterGroup);
         this.initialTileLayer();
         this.geolocation = geolocation;
         this.ajax = ajax;
+        if (typeof isLoggedIn !== 'undefined' && isLoggedIn) {
+            this.initialiseSightingButtonDelegate();
+        }
     }
 
     initialTileLayer() {
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OPenStreetMap</a> contributors'
         }).addTo(this.map);
     }
@@ -24,14 +32,6 @@ export class PetMap {
     setPetDataOnMap(data) {
         this.allData = data;
         this.renderVisibleMarkers();
-
-        // Only add the listener once, not every time data is set
-        if (!this.moveEndListenerAdded) {
-            this.map.on('moveend', () => {
-                this.renderVisibleMarkers();
-            });
-            this.moveEndListenerAdded = true;
-        }
     }
 
     /**
@@ -42,61 +42,41 @@ export class PetMap {
      */
     renderVisibleMarkers() {
         // Clear old markers from the map
-        this.markers.forEach(marker => this.map.removeLayer(marker));
+        this.clusterGroup.clearLayers();
         this.markers = [];
-
-        // Only render markers within the current map view
-        let bounds = this.map.getBounds();
         this.allData.forEach((pets) => {
-            // Only add marker if it's within the visible area
-            if (!bounds.contains([pets.latitude, pets.longitude])) {
-                return;
-            }
 
             // Build popup HTML card, create a new sightings button only shows user is logged in.
             let markerText = `
-               <div class="pet-marker mb-4 mt-4">
-                    <div><img src="${pets.photo_url}" alt="${pets.name}"/></div>
-                    <p class="pet-name">${pets.name}</p>
-                    <p class="pet-location">Last seen: ${pets.address || 'Unknown location'}</p>
-                    <p class="pet-status">Status: ${pets.status}</p>
-                    <p class="pet-sighting">Previous Sighting: ${pets.comment}</p>
-                    
-                    ${isLoggedIn ? `
-                    <input type="hidden" name="pet-id" value="${pets.id}"/>
-                    <button type="submit" class="btn btn-primary add-sighting-btn"> Add A New Sighting </button>
-                    ` : '<p class="text-muted">Log in to add a sighting</p>'}
-                </div>
-            `;
+      <div class="pet-marker mb-3">
+          <img src="${MapAndSightingDataValidation.escapeHTML(pets.photo_url)}" alt="${MapAndSightingDataValidation.escapeHTML(pets.name)}"/>                                                                                       
+          <div class="p-2">
+              <p class="pet-name fw-bold mb-1">${MapAndSightingDataValidation.escapeHTML(pets.name)}</p>                                                                                                                            
+              <span class="badge ${pets.status === 'lost' ? 'bg-danger' : 'bg-success'} mb-1">${MapAndSightingDataValidation.escapeHTML(pets.status)}</span>
+              <p class="pet-location mb-1">Last seen: ${MapAndSightingDataValidation.escapeHTML(pets.address) || 'Unknown location'}</p>
+              <p class="pet-sighting mb-1">${MapAndSightingDataValidation.escapeHTML(pets.comment)}</p>
+              ${isLoggedIn ? `
+              <input type="hidden" name="pet-id" value="${MapAndSightingDataValidation.escapeHTML(pets.id)}"/>
+              <button type="submit" class="btn btn-primary btn-sm py-0 w-75 add-sighting-btn mt-1" style="font-size: 12px;">Add A New Sighting</button>   
+              ` : '<p class="text-muted mb-0"><small>Log in to add a sighting</small></p>'}
+          </div>
+      </div>
+  `;
 
             let marker = L.marker([pets.latitude, pets.longitude])
-                .addTo(this.map)
+                .addTo(this.clusterGroup)
                 .bindPopup(markerText, {
                     autoClose: true,
                     closeOnClick: true,
-                    autoPan: false,
-                    autoPanPaddingTopLeft: [0, 100],
-                    autoPanPaddingBottomRight:
-                        [0, 20]
+                    autoPan: true,
+                    autoPanPaddingTopLeft: [50, 100],
+                    autoPanPaddingBottomRight: [50, 50]
                 })
-                // prevent page reload using dom
+
                 .on('mouseover', event => {
                     event.target.openPopup();
-
-                    let markerPoint = this.map.latLngToContainerPoint(event.target.getLatLng());
-                    let mapHeight = this.map.getContainer().clientHeight;
-                    let popupEl = event.target.getPopup().getElement();
-
-                    if (markerPoint.y < 250) {
-                        popupEl.style.transform += ' translateY(250px)';
-                    } else if (markerPoint.y > mapHeight - 150) {
-                        popupEl.style.transform += ' translateY(-50px)';
-                    }
                 });
 
-            if (isLoggedIn) {
-                this.onPopupSightingButtonClick(marker);
-            }
             marker.petId = pets.id;
             this.markers.push(marker);
         });
@@ -128,10 +108,7 @@ export class PetMap {
 
         // Close the pet popup so user can interact with the pet map
         this.map.closePopup();
-        this.markers.forEach(marker => {
-            marker.off('mouseover');
-            marker.closePopup();
-        });
+        this.clusterGroup.clearLayers();
 
         // Fetch the pet data chose by user to show it's name and photo in the panel
         let pet = this.allData.find(p => p.id == petId);
@@ -139,21 +116,24 @@ export class PetMap {
         // Create floating panel UI on top of the map
         let panel = document.createElement('div');
         panel.id = 'sighting-panel';
-        panel.innerHTML = `
-             <div class="sighting-pet-info ">
-                <img src="${pet.photo_url}" alt="${pet.name}" style="width: 120px" />
-                <h5>${pet.name}</h5>
-             </div>
-             <h5>Create New Sighting</h5>
-             <p>Click on the map to report pet location.</p>
-             <button id="sighting-use-location" class="btn btn-outline-primary btn-sm mb-2 w-100">
-             Or choose your current location
-             </button>
-             <p id="sighting-coords">No location selected</p>
-             <input type="text" id="sighting-comment" class="w-100 mb-2" placeholder="Add a comment..." required/>
-             <button id="sighting-submit" class="btn btn-primary me-2" disabled>Submit</button>
-             <button id="sighting-cancel" class="btn btn-secondary">Cancel</button>
-        `;
+        panel.innerHTML = `                                                                                                                                                                                                               
+      <div class="sighting-pet-info create-pet mb-3">                                                                                                                                                                                   
+      <img src="${MapAndSightingDataValidation.escapeHTML(pet.photo_url)}" alt="${MapAndSightingDataValidation.escapeHTML(pet.name)}" />                                                                                            
+      <h6 class="mt-2 mb-0 fw-bold">${MapAndSightingDataValidation.escapeHTML(pet.name)}</h6>                                                                                                                                       
+  </div> 
+      <h6 class="fw-bold">Create New Sighting</h6>
+      <p class="mb-2 font-bold" style="font-size: 13px;">📍 Click on the map to report pet location.</p>
+      <button id="sighting-use-location" class="btn btn-outline-primary btn-sm mb-2 w-100">
+          Use my current location
+      </button>
+      <p id="sighting-coords" class="text-muted mb-2" style="font-size: 12px;">No location selected</p>
+      <input type="text" id="sighting-comment" class="form-control form-control-sm mb-3" placeholder="Add a comment..." required/>
+      <div class="d-flex gap-2">
+          <button id="sighting-submit" class="btn btn-primary btn-sm flex-grow-1" disabled>Submit</button>
+          <button id="sighting-cancel" class="btn btn-secondary btn-sm flex-grow-1">Cancel</button>
+      </div>
+  `;
+
         this.map.getContainer().style.position = 'relative';
         this.map.getContainer().appendChild(panel);
 
@@ -182,12 +162,21 @@ export class PetMap {
         // Post new sighting to viewSighting.php
         document.getElementById('sighting-submit').addEventListener('click', () => {
             let comment = document.getElementById('sighting-comment').value.trim();
-            if (!comment) {
-                alert('Please enter a comment.');
+            let commentError = MapAndSightingDataValidation.validateComment(comment);
+            if (commentError) {
+                alert(commentError);
                 return;
             }
-            if (!this.sightingLatLong) {
-                alert('Please select a location');
+            let coordError = MapAndSightingDataValidation.validateCoordinates(
+                this.sightingLatLong?.lat, this.sightingLatLong?.lng
+            );
+            if (coordError) {
+                alert(coordError);
+                return;
+            }
+            let petIdError = MapAndSightingDataValidation.validatePetId(this.sightingPetId);
+            if (petIdError) {
+                alert(petIdError);
                 return;
             }
 
@@ -224,6 +213,8 @@ export class PetMap {
                 + '&sighting-comment=' + encodeURIComponent(comment)
                 + '&latitude=' + this.sightingLatLong.lat
                 + '&longitude=' + this.sightingLatLong.lng
+                + '&address=' + encodeURIComponent(this.sightingAddress || '')
+                + '&token=' + ajaxToken
             );
         });
 
@@ -273,5 +264,20 @@ export class PetMap {
         // Remove the floating panel from the DOM
         let panel = document.getElementById('sighting-panel');
         if (panel) panel.remove();
+        this.renderVisibleMarkers();
     }
+
+    initialiseSightingButtonDelegate() {
+        this.map.getContainer().addEventListener('click', (e) => {
+            let btn = e.target.closest('.add-sighting-btn');
+            if (!btn) return;
+            let petIdInput = btn.closest('.pet-marker').querySelector('input[name="pet-id"]');
+            if (petIdInput) {
+                this.enterCreateSightingMode(petIdInput.value);
+            }
+        });
+    }
+
+
+
 }

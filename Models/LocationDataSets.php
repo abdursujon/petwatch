@@ -15,19 +15,21 @@ class LocationDataSet {
     }
 
     public function insertLocation(
-        $petId, $latitude, $longitude, $timestamp = null
+        $petId, $latitude, $longitude, $timestamp, $address = null, $sightingId = null
     ): bool {
         try {
             $sql = "INSERT INTO locations
-                    (pet_id, latitude, longitude, timestamp)
+                    (pet_id, latitude, longitude, timestamp, address, sighting_id)
                     VALUES
-                    (:pet_id, :latitude, :longitude, :timestamp)";
+                    (:pet_id, :latitude, :longitude, :timestamp, :address, :sightingId)";
             $stmt = $this->_dbHandle->prepare($sql);
             return $stmt->execute([
                 ':pet_id' => $petId,
                 ':latitude' => $latitude,
                 ':longitude' => $longitude,
-                ':timestamp' => $timestamp
+                ':timestamp' => $timestamp,
+                ':address' => $address,
+                ':sightingId' => $sightingId
             ]);
         } catch (PDOException $e) {
             throw new Exception(

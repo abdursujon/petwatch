@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once('js/ValidateAjaxToken.php');
 require_once('Models/CreateSightings.php');
 
 $view = new stdClass();
@@ -52,6 +53,7 @@ function validateSightingsData($input): array {
 if($_SERVER['REQUEST_METHOD'] === 'POST'
     && !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
     && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest'){
+    validateAjaxToken();
     header('Content-Type: application/json');
 
     $petId = filter_input(INPUT_POST, 'pet_id', FILTER_SANITIZE_NUMBER_INT);

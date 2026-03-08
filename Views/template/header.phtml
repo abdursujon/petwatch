@@ -1,11 +1,3 @@
-<script>
-    const ajaxToken = "<?php
-            if (!isset($_SESSION['ajaxToken'])) {
-                $_SESSION['ajaxToken'] = substr(str_shuffle(MD5(microtime())), 0, 20);
-            }
-            echo $_SESSION['ajaxToken'];
-            ?>";
-</script>
 <?php
 // Only start a session when one doesn't exist yet
 if (session_status() === PHP_SESSION_NONE) {
@@ -14,7 +6,14 @@ if (session_status() === PHP_SESSION_NONE) {
 // Connect the database model to fetch user details
 require_once(__DIR__ . '/../../Models/Database.php')
 ?>
-
+<script>
+    const ajaxToken = "<?php
+            if (!isset($_SESSION['ajaxToken'])) {
+                $_SESSION['ajaxToken'] = substr(str_shuffle(MD5(microtime())), 0, 20);
+            }
+            echo $_SESSION['ajaxToken'];
+            ?>";
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,6 +34,8 @@ require_once(__DIR__ . '/../../Models/Database.php')
           crossorigin="anonymous">
     <!-- Leaflet CSS header -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
     <!--Custom CSS links-->
     <link href="css/index.css" rel="stylesheet">
     <link href="css/login.css" rel="stylesheet">

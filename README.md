@@ -30,7 +30,7 @@ Live Link: http://sickly-impostors.poseidon.salford.ac.uk/clientserver/viewSight
 Requirements for Map
 1. OO & Design: Cohesive JS/PHP OO architecture with clear patterns and re-use. x
 2. AJAX: 3+ high-quality, efficient endpoints with robust error handling and caching where appropriate. x
-3. Security: Strong input validation, CSRF/URL tokens, output encoding; shows threat-modelling decisions.
+3. Security: Strong input validation, CSRF/URL tokens, output encoding; shows threat-modelling decisions. x
 4. Data: JSON/XML via extended DB classes; clear schemas. x
 5. Map/UX: Highly sophisticated, real-time updates, smooth interactions (e.g., list to petMap focus, clustering), reliable geolocation, fully responsive; scales to 100s of items.
 6. Comments: Consistent, meaningful, maintainable.

@@ -43,9 +43,10 @@ class CreateSightings
             ]);
 
             if ($success) {
+                $sightingId = $this->_dbHandle->lastInsertId();
                 $locationDataSet = new LocationDataSet();
                 $timestamp = date('Y-m-d H:i:s');
-                $locationDataSet->insertLocation($petId, $latitude, $longitude, $timestamp, $address);
+                $locationDataSet->insertLocation($petId, $latitude, $longitude, $timestamp, $address, $sightingId);
             }
 
             return $success;

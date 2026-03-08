@@ -29,11 +29,11 @@ class SightingsDataSets
      */
     public function fetchAllSightings()
     {
-        $sqlQuery = "SELECT pets.*, locations.latitude, locations.longitude, locations.timestamp, locations.address,
-                            sightings.comment, sightings.user_id, sightings.pet_id
-             FROM pets
-             INNER JOIN locations ON pets.id = locations.pet_id
-             INNER JOIN sightings ON pets.id = sightings.pet_id";
+        $sqlQuery = "SELECT pets.*, l.latitude, l.longitude, l.timestamp, l.address,                                                                                                                                                      
+                      s.comment, s.user_id, s.pet_id                                                                                                                                                                                
+               FROM pets
+               INNER JOIN sightings s ON pets.id = s.pet_id                                                                                                                                                                         
+               INNER JOIN locations l ON l.sighting_id = s.id";
 
         $statement = $this->_dbHandle->prepare($sqlQuery);
         $statement->execute();

@@ -1,3 +1,4 @@
+import {MapAndSightingDataValidation} from './MapAndSightingDataValidation.js';
 export class SightingList{
     constructor(containerId, petMap, ajax){
         this.container = document.getElementById(containerId);
@@ -68,23 +69,41 @@ export class SightingList{
 
         batch.forEach((pet, index) => {
             let col = document.createElement('div');
-            col.className = 'col-12 col-md-6 col-lg-4 col-xxl-3 mb-3';
+            col.className = 'col-12 col-md-6 col-lg-4 col-xxl-3 mb-5';
             let card = document.createElement('div');
-            card.className = 'card shadow-sm rounded h-100'
+            card.className = 'card shadow-lg rounded-3 h-100 border-0'
             card.innerHTML = `
-                  <img src="${pet.photo_url}" alt="${pet.name}" class="card-img-top" />
-                  <div class="card-body">
-                      <h5 class="card-title">${pet.name}</h5>
-                      <span class="badge ${pet.status === 'lost' ? 'bg-danger' : 'bg-success'}">${pet.status}</span>
-                      <p class="card-text mt-2">${pet.comment}</p>
-                      <p class="card-text"><small class="text-muted">Location: <span class="sighting-address">Loading...</span></small></p>
-                      ${isLoggedIn ? `
-                      <button class="btn btn-primary btn-sm add-sighting-btn" data-pet-id="${pet.id}">Add A New Sighting</button>
-                      ` : '<p class="text-muted">Log in to add a sighting</p>'}
-                  </div>
-            `;
+      <img src="${MapAndSightingDataValidation.escapeHTML(pet.photo_url)}" alt="${MapAndSightingDataValidation.escapeHTML(pet.name)}" class="card-img-top" style="height: 200px; object-fit: cover;" />
+      <div class="card-body d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title mb-0">${MapAndSightingDataValidation.escapeHTML(pet.name)}</h5>
+              <span class="badge ${pet.status === 'lost' ? 'bg-danger' : 'bg-success'}">${MapAndSightingDataValidation.escapeHTML(pet.status)}</span>
+          </div>
+          <p class="card-text text-muted mb-1"><small>Breed: ${MapAndSightingDataValidation.escapeHTML(pet.breed)}</small></p>
+          <p class="card-text mb-1">"${MapAndSightingDataValidation.escapeHTML(pet.comment)}"</p>
+          <p class="card-text mt-auto"><small class="text-muted">Location: <span class="sighting-address">Loading...</span></small></p>
+          ${isLoggedIn ? `
+          <button class="btn btn-primary btn-sm py-2 w-75 add-sighting-btn mt-1 mb-4" style="font-size: 14px;" data-pet-id="${MapAndSightingDataValidation.escapeHTML(pet.id)}">Add A New Sighting</button>
+          ` : '<p class="text-muted mb-4"><small>Log in to add a sighting</small></p>'}
+      </div>
+  `;
+
             col.appendChild(card)
             this.container.appendChild(col);
+
+            card.addEventListener('click', (e) => {
+                if (e.target.classList.contains('add-sighting-btn')) return;
+                document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
+                this.petMap.map.flyTo([pet.latitude, pet.longitude], 18);
+                setTimeout(() => {
+                    this.petMap.markers.forEach(marker => {
+                        if (marker.petId == pet.id) {
+                            marker.openPopup();
+                        }
+                    });
+                }, 800);
+            });
+            card.style.cursor = 'pointer';
 
             let addressSpan = card.querySelector('.sighting-address');
             addressSpan.textContent = pet.address || 'Unknown location';

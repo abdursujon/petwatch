@@ -9,9 +9,9 @@
  */
 import {PetMap} from './PetMap.js';
 import {SightingList} from './SightingList.js'
-// import {SearchValidation} from './map/SearchValidation.js'
 import {Geolocation} from './Geolocation.js'
 import {SightingsMapAndListAjax} from "./SightingsMapAndListAjax.js";
+import {MapAndSightingDataValidation} from './MapAndSightingDataValidation.js';
 
 class MapMediatorApp {
     constructor() {
@@ -29,6 +29,15 @@ class MapMediatorApp {
         let focusLng = parseFloat(params.get('lng'));
         let focusPetId = params.get('focusPet');
 
+        // Validate URL parameters before use
+        if (focusPetId && MapAndSightingDataValidation.validatePetId(focusPetId)) {
+            focusPetId = null;
+        }
+        if (MapAndSightingDataValidation.validateCoordinates(focusLat, focusLng)) {
+            focusLat = NaN;
+            focusLng = NaN;
+        }
+
         this.ajax.fetchSightings(
             (data) => {
                 this.petMap.setPetDataOnMap(data);
@@ -36,7 +45,7 @@ class MapMediatorApp {
 
                 // After data is loaded, focus on the searched pet
                 if (focusPetId && focusLat && focusLng) {
-                    this.petMap.map.setView([focusLat, focusLng], 18);
+                    this.petMap.map.flyTo([focusLat, focusLng], 18);
                     // Wait for moveend re-render to finish, then open popup
                     setTimeout(() => {
                         this.petMap.markers.forEach(marker => {
@@ -69,12 +78,26 @@ class MapMediatorApp {
         if (!focusPetId) {
             this.geolocation.locate(
                 (lat, lng) => {
-                    this.petMap.map.setView([lat, lng], 16);
+                    this.petMap.map.flyTo([lat, lng], 16);
                     this.geolocation.showUserLocation(this.petMap.map, lat, lng);
                 },
                 () => {}
             );
         }
+
+        // Real time update on the map without page reload. If other user create new sighting the marker will show on the map without needing any page reload
+        setInterval(() => {
+            this.ajax.cachedSightings = null;
+            this.ajax.fetchSightings(
+                (data) => {
+                    this.petMap.setPetDataOnMap(data);
+                    this.sightingList.setSightingData(data);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+        }, 30000);
     }
 
 }
