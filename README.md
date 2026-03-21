@@ -73,7 +73,7 @@ Tech requirments
 11. Debouncing
 
 poseidon ssh connection:
-terminal command: ssh -L 3306:localhost:3306 username@poseidon.salford.ac.uk
+terminal command: ssh -L 3306:localhost:3306 sge366@poseidon.salford.ac.uk
 and in database: conect with mariadb pass
 
 db_password="pass"

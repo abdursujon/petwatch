@@ -11,6 +11,7 @@ export class PetMap {
     this.map.addLayer(this.clusterGroup);
     this.initialTileLayer();
     this.geolocation = geolocation;
+    this.addLocateMeButton();
     this.ajax = ajax;
     if (typeof isLoggedIn !== 'undefined' && isLoggedIn) {
       this.initialiseSightingButtonDelegate();
@@ -57,7 +58,7 @@ export class PetMap {
               <p class="pet-sighting mb-1">${MapAndSightingDataValidation.escapeHTML(pets.comment)}</p>
               ${isLoggedIn ? `
               <input type="hidden" name="pet-id" value="${MapAndSightingDataValidation.escapeHTML(pets.id)}"/>
-              <button type="submit" class="btn btn-primary btn-sm py-0 w-75 add-sighting-btn mt-1" style="font-size: 12px;">Add A New Sighting</button>   
+              <button type="submit" class="btn btn-primary btn-sm py-0 w-75 add-sighting-btn text-start mt-1" style="font-size: 14px;">Create Sighting</button>   
               ` : '<p class="text-muted mb-0"><small>Log in to add a sighting</small></p>'}
           </div>
       </div>
@@ -99,12 +100,15 @@ export class PetMap {
     })
   }
 
-  // Ajax endpoint 2
+
   enterCreateSightingMode(petId) {
     this.sightingMode = true;
     this.sightingPetId = petId;
     this.sightingLatLong = null; // Holds the location user click
     this.sightingMarker = null;
+
+    let existingPanel = document.getElementById('sighting-panel');
+    if (existingPanel) existingPanel.remove();
 
     // Close the pet popup so user can interact with the pet map
     this.map.closePopup();
@@ -116,6 +120,7 @@ export class PetMap {
     // Create floating panel UI on top of the map
     let panel = document.createElement('div');
     panel.id = 'sighting-panel';
+    panel.className = 'shadow-lg py-3 px-3'
     panel.innerHTML = `                                                                                                                                                                                                               
       <div class="sighting-pet-info create-pet mb-3">                                                                                                                                                                                   
       <img src="${MapAndSightingDataValidation.escapeHTML(pet.photo_url)}" alt="${MapAndSightingDataValidation.escapeHTML(pet.name)}" />                                                                                            
@@ -124,7 +129,7 @@ export class PetMap {
       <h6 class="fw-bold">Create New Sighting</h6>
       <p class="mb-2 font-bold" style="font-size: 13px;">📍 Click on the map to report pet location.</p>
       <button id="sighting-use-location" class="btn btn-outline-primary btn-sm mb-2 w-100">
-          Use my current location
+          Or Use Your Location
       </button>
       <p id="sighting-coords" class="text-muted mb-2" style="font-size: 12px;">No location selected</p>
       <input type="text" id="sighting-comment" class="form-control form-control-sm mb-3" placeholder="Add a comment..." required/>
@@ -135,7 +140,11 @@ export class PetMap {
   `;
 
     this.map.getContainer().style.position = 'relative';
-    this.map.getContainer().appendChild(panel);
+    this.map.getContainer().after(panel);
+
+    if (window.innerWidth <= 1279) {
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
     panel.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -147,16 +156,13 @@ export class PetMap {
     };
     this.map.on('click', this.onMapClick);
 
-    // Option 2: Use GPS current geolocation.
+    // Option 2: Use GPS current geolocation from tracking.
     document.getElementById('sighting-use-location').addEventListener('click', () => {
-      this.geolocation.locate(
-        (lat, lng) => {
-          this.setSightingLocation(lat, lng);
-        },
-        () => {
-          alert('Could not get your location. Please click on the map instead to choose a location.')
-        }
-      );
+      if (this.geolocation.lat && this.geolocation.lng) {
+        this.setSightingLocation(this.geolocation.lat, this.geolocation.lng);
+      } else {
+        alert('Could not get your location. Please click on the map instead to choose a location.');
+      }
     });
 
     // Post new sighting to viewSighting.php
@@ -274,6 +280,20 @@ export class PetMap {
       let petIdInput = btn.closest('.pet-marker').querySelector('input[name="pet-id"]');
       if (petIdInput) {
         this.enterCreateSightingMode(petIdInput.value);
+      }
+    });
+  }
+
+  addLocateMeButton() {
+    let self = this;
+    let btn = document.getElementById('locate-me-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function () {
+      if (self.geolocation.lat && self.geolocation.lng) {
+        self.map.flyTo([self.geolocation.lat, self.geolocation.lng], 16);
+      } else {
+        alert('Please allow location access in your browser settings to use this feature.');
       }
     });
   }

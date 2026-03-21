@@ -17,8 +17,8 @@ class MapMediatorApp {
   constructor() {
     this.ajax = new SightingsMapAndListAjax()
     this.geolocation = new Geolocation();
-    this.defaultLat = 53.4631;
-    this.defaultLng = -2.2913;
+    this.defaultLat = 53.4872;
+    this.defaultLng = -2.2737;
     this.petMap = new PetMap('map', this.defaultLat, this.defaultLng, 16, this.geolocation, this.ajax);
     this.sightingList = new SightingList('sighting-container', this.petMap, this.ajax);
   }
@@ -84,13 +84,13 @@ class MapMediatorApp {
 
     // Only use geolocation if not redirected from search
     if (!focusPetId) {
-      this.geolocation.locate(
-        (lat, lng) => {
+      let hasCentered = false;
+      this.geolocation.startTracking(this.petMap.map, (lat, lng) => {
+        if (!hasCentered) {
           this.petMap.map.flyTo([lat, lng], 16);
-        },
-        () => {}
-      );
-      this.geolocation.startTracking(this.petMap.map);
+          hasCentered = true;
+        }
+      });
     }
 
     // Real time update on the map without page reload. If other user create new sighting the marker will show on the map without needing any page reload

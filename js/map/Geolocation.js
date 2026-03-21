@@ -89,10 +89,16 @@ export class Geolocation {
       color: '#fff',
       fillOpacity: 1
     }).addTo(map)
-      .bindPopup(`                                                                                                                                                                                                                      
-      <div style="text-align: center; padding: 4px 8px;">                                                                                                                                                                           
-          <span style="font-weight: 600; color: #2196F3; font-size: 13px;">📍 Your Location</span>                                                                                                                                  
-      </div>      
-      `, {closeButton: false, className: 'user-location-popup'})
+      .bindPopup(`                                                                                                                                                                                                                                                                                                                                                                                                                                              
+    <div style="text-align: center; padding: 4px 8px;">                                                                                                                                                                             
+        <span style="font-weight: 600; color: #2196F3; font-size: 13px;">📍 Your Location</span>                                                                                                                                  
+    </div>                                                                                                                                                                                                                          
+    `, {closeButton: false, className: 'user-location-popup'})
+      .on('mouseover', function (e) {
+        e.target.openPopup();
+      })
+      .on('mouseout', function (e) {
+        e.target.closePopup();
+      });
   }
 }

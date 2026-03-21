@@ -84,7 +84,7 @@ export class SightingList {
           <p class="card-text mb-1">"${MapAndSightingDataValidation.escapeHTML(pet.comment)}"</p>
           <p class="card-text mt-auto"><small class="text-muted">Location: <span class="sighting-address">Loading...</span></small></p>
           ${isLoggedIn ? `
-          <button class="btn btn-primary btn-sm py-2 w-75 add-sighting-btn mt-1 mb-4" style="font-size: 14px;" data-pet-id="${MapAndSightingDataValidation.escapeHTML(pet.id)}">Add A New Sighting</button>
+          <button class="btn btn-primary btn-sm py-1 w-75 add-sighting-btn mt-1 mb-4 text-start" style="font-size: 16px;" data-pet-id="${MapAndSightingDataValidation.escapeHTML(pet.id)}">Add A New Sighting</button>
           ` : '<p class="text-muted mb-4"><small>Log in to add a sighting</small></p>'}
       </div>
   `;
