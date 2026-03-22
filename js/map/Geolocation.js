@@ -1,3 +1,14 @@
+/**
+ * This class is design to support geolocation in browser.
+ * We declare it as export since we implement Mediator Design,
+ * where one app will be build consisting all sub-classes.
+ * <p>
+ *   The class provides one-time location lookup via locate() method.
+ *   Continuous live GPS tracking via startTracking() methods.
+ *   Also render a blue dot on the map by utilising method showLocation() when user allow geolocation.
+ *   To stop live tracking we implement stopTracking() method.
+ * </p>
+ */
 export class Geolocation {
   constructor() {
     this.lat = null;
@@ -7,6 +18,14 @@ export class Geolocation {
     this.dotMarker = null;
   }
 
+  /**
+   * The method first check if the browser supports geolocation, if not show error.
+   * If geolocation is supported, request the position with getCurrentPosition()
+   * If successfull, passess the lat/lng to onSuccess()
+   * On failure, calls onError()
+   * @param onSuccess
+   * @param onError
+   */
   locate(onSuccess, onError) {
     if (!navigator.geolocation) {
       onError();
@@ -28,7 +47,14 @@ export class Geolocation {
     );
   }
 
-  // Live tracking — updates the blue dot as the user moves
+  /**
+   * If geolocation is allowed, this method allow us to tracks the user location as they move.
+   * watchPosition() fires for every time device detects a change in position.
+   * Each update stores the new lat/lng, moves the blue dot on the map via showUserLocation().
+   * The returned id is saved to this.watchId so stopTracking() method can cancel it later.
+   * @param map
+   * @param onUpdate
+   */
   startTracking(map, onUpdate) {
     if (!navigator.geolocation) return;
 
@@ -51,15 +77,15 @@ export class Geolocation {
     );
   }
 
-  // Stop live tracking
-  stopTracking() {
-    if (this.watchId !== null) {
-      navigator.geolocation.clearWatch(this.watchId);
-      this.watchId = null;
-    }
-  }
-
-  // Add/update the blue dot on the map at the user location
+  /**
+   * Displays and updates the user's position on the map as blue dot with pulsing ring animation.
+   * On initial call, it creats both markers and adds a hover popup.
+   * The hover popup shows a message (Your location) when user interact with it.
+   * On additional calls, it moves the existing geolocation marker to the new position without creating new one.
+   * @param map
+   * @param lat
+   * @param lng
+   */
   showUserLocation(map, lat, lng) {
     let latlng = [lat, lng];
 
@@ -100,5 +126,17 @@ export class Geolocation {
       .on('mouseout', function (e) {
         e.target.closePopup();
       });
+  }
+
+  /**
+   * This method helps us stop the GPS tracking started by startTracking() method.
+   * When user leave the page, or leave the site, this method help us stop tracking.
+   * Which saves background processing and resources when we don't need the geolocation anymore.
+   */
+  stopTracking() {
+    if (this.watchId !== null) {
+      navigator.geolocation.clearWatch(this.watchId);
+      this.watchId = null;
+    }
   }
 }

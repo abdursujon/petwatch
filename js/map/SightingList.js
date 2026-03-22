@@ -1,16 +1,13 @@
 import {MapAndSightingDataValidation} from './MapAndSightingDataValidation.js';
 
 export class SightingList {
-  constructor(containerId, petMap, ajax) {
+  constructor(containerId) {
     this.container = document.getElementById(containerId);
-    this.petMap = petMap;
     this.allData = [];
     this.displayedCount = 0;
     this.nextSizeOfBatchLoadedSightings = 20;
-    this.ajax = ajax;
     this.initialiseFilters();
   }
-
 
   setSightingData(data) {
     this.allData = data;
@@ -94,27 +91,22 @@ export class SightingList {
 
       card.addEventListener('click', (e) => {
         if (e.target.classList.contains('add-sighting-btn')) return;
-        document.getElementById('map').scrollIntoView({behavior: 'smooth'});
-        this.petMap.map.flyTo([pet.latitude, pet.longitude], 18);
-        setTimeout(() => {
-          this.petMap.markers.forEach(marker => {
-            if (marker.petId == pet.id) {
-              marker.openPopup();
-            }
-          });
-        }, 800);
+        if (this.onCardClick) {
+          this.onCardClick(pet);
+        }
       });
       card.style.cursor = 'pointer';
 
       let addressSpan = card.querySelector('.sighting-address');
       addressSpan.textContent = pet.address || 'Unknown location';
 
-      // Reuse sighting mode from PetMap.js class
+      // Notify mediator central app to enter sighting mode for this pet.
       if (isLoggedIn) {
         let btn = card.querySelector('.add-sighting-btn');
         btn.addEventListener('click', () => {
-          document.getElementById('map').scrollIntoView({behavior: 'smooth'});
-          this.petMap.enterCreateSightingMode(pet.id);
+          if (this.onCreateSighting) {
+            this.onCreateSighting(pet.id);
+          }
         })
       }
     });

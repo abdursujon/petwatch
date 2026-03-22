@@ -1,7 +1,7 @@
 import {MapAndSightingDataValidation} from './MapAndSightingDataValidation.js';
 
 export class PetMap {
-  constructor(elementId, lat, lng, zoom, geolocation, ajax) {
+  constructor(elementId, lat, lng, zoom) {
     this.map = L.map(elementId, {maxZoom: 19}).setView([lat, lng], zoom);
     this.popupOption = {"closeButton": false};
     this.markers = []; // stores all marker objects on the map
@@ -10,9 +10,7 @@ export class PetMap {
     this.clusterGroup = L.markerClusterGroup();
     this.map.addLayer(this.clusterGroup);
     this.initialTileLayer();
-    this.geolocation = geolocation;
     this.addLocateMeButton();
-    this.ajax = ajax;
     if (typeof isLoggedIn !== 'undefined' && isLoggedIn) {
       this.initialiseSightingButtonDelegate();
     }
@@ -83,24 +81,6 @@ export class PetMap {
     });
   }
 
-
-  /**
-   * When "Add A New Sighting" button is clicked inside a popup, enters create sighting mode popup.
-   * Only logged in user can perform this action.
-   */
-  onPopupSightingButtonClick(marker) {
-    marker.on('popupopen', () => {
-      let btn = marker.getPopup().getElement().querySelector('.add-sighting-btn');
-      if (btn) {
-        btn.addEventListener('click', () => {
-          let petId = marker.getPopup().getElement().querySelector('input[name="pet-id"]').value;
-          this.enterCreateSightingMode(petId);
-        });
-      }
-    })
-  }
-
-
   enterCreateSightingMode(petId) {
     this.sightingMode = true;
     this.sightingPetId = petId;
@@ -158,10 +138,8 @@ export class PetMap {
 
     // Option 2: Use GPS current geolocation from tracking.
     document.getElementById('sighting-use-location').addEventListener('click', () => {
-      if (this.geolocation.lat && this.geolocation.lng) {
-        this.setSightingLocation(this.geolocation.lat, this.geolocation.lng);
-      } else {
-        alert('Could not get your location. Please click on the map instead to choose a location.');
+      if (this.onUseMyLocation) {
+        this.onUseMyLocation();
       }
     });
 
@@ -186,42 +164,17 @@ export class PetMap {
         return;
       }
 
-      // Send post request to record the sighting
-      var sightingXhr = new XMLHttpRequest();
-      sightingXhr.open('POST', 'createSightings.php', true);
-      sightingXhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-      sightingXhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-      sightingXhr.onreadystatechange = () => {
-        if (sightingXhr.readyState === 4) {
-          if (sightingXhr.status === 200) {
-            try {
-              let result = JSON.parse(sightingXhr.responseText);
-              if (result.success) {
-                alert('Sighting added successfully.');
-                if (this.onSightingAdded) {
-                  this.onSightingAdded();
-                }
-              } else {
-                alert('Failed to add sighting.')
-              }
-            } catch (e) {
-              alert('Unexpected server response.')
-            }
-          } else {
-            alert('Failed to add sightings.')
-          }
-          this.exitSightingMode();
-        }
-      };
-
-      sightingXhr.send('pet_id=' + this.sightingPetId
-        + '&sighting-comment=' + encodeURIComponent(comment)
-        + '&latitude=' + this.sightingLatLong.lat
-        + '&longitude=' + this.sightingLatLong.lng
-        + '&address=' + encodeURIComponent(this.sightingAddress || '')
-        + '&token=' + ajaxToken
-      );
+      // Notify mediator to handle submission
+      if (this.onSightingSubmit) {
+        this.onSightingSubmit(
+          this.sightingPetId,
+          comment,
+          this.sightingLatLong.lat,
+          this.sightingLatLong.lng,
+          this.sightingAddress || ''
+        );
+      }
+      this.exitSightingMode();
     });
 
     document.getElementById('sighting-cancel').addEventListener('click', () => {
@@ -237,22 +190,14 @@ export class PetMap {
     let coordsEl = document.getElementById('sighting-coords');
     coordsEl.textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 
-    this.ajax.reverseLatLngToHumanReadableAddress(lat, lng, (address) => {
-        coordsEl.textContent = address
+    if (this.onReverseGeocode) {
+      this.onReverseGeocode(lat, lng, (address) => {
+        coordsEl.textContent = address;
         this.sightingAddress = address;
-      },
-      () => {
+      }, () => {
         this.sightingAddress = lat.toFixed(5) + ', ' + lng.toFixed(5);
-      }
-    );
-
-    // Enable submit when location is set
-    document.getElementById('sighting-submit').disabled = false;
-    // Remove old temporary marker if user re-clicks on a different location on the map
-    if (this.sightingMarker) {
-      this.map.removeLayer(this.sightingMarker);
+      });
     }
-    this.sightingMarker = L.marker([lat, lng]).addTo(this.map);
   }
 
   /**
@@ -285,15 +230,12 @@ export class PetMap {
   }
 
   addLocateMeButton() {
-    let self = this;
     let btn = document.getElementById('locate-me-btn');
     if (!btn) return;
 
-    btn.addEventListener('click', function () {
-      if (self.geolocation.lat && self.geolocation.lng) {
-        self.map.flyTo([self.geolocation.lat, self.geolocation.lng], 16);
-      } else {
-        alert('Please allow location access in your browser settings to use this feature.');
+    btn.addEventListener('click', () => {
+      if (this.onLocateMe) {
+        this.onLocateMe();
       }
     });
   }
