@@ -19,7 +19,7 @@ $view->title = "Login";
 $view->loginError = '';
 $view->successMessage = '';
 
-require_once('Models/UserAuthentication.php');
+require_once('models/UserAuthentication.php');
 
 $userAuthentication = new UserAuthentication();
 
@@ -44,7 +44,7 @@ if ($_SESSION['login_attempts'] >= 3) {
   if ($elapsed < 120) {
     $remaining = 120 - $elapsed;
     $view->loginError = "Too many login attempts. Please wait {$remaining} seconds before trying again.";
-    require_once('Views/login.phtml');
+    require_once('views/login.phtml');
     exit();
   } else {
     $_SESSION['login_attempts'] = 0;
@@ -74,4 +74,4 @@ if (isset($_POST['login'])) {
   }
 }
 
-require_once('Views/login.phtml');
+require_once('views/login.phtml');

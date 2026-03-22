@@ -22,7 +22,7 @@ export class SightingsMapAndListAjax {
     }
 
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'js/map/ajax-php-call/SightingsJsonData.php?token=' + ajaxToken, true);
+    xhr.open('GET', 'js/map/pet-map-and-list-endpoints/SightingsJsonData.php?token=' + ajaxToken, true);
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status !== 200) {
@@ -46,7 +46,7 @@ export class SightingsMapAndListAjax {
    */
   submitNewSighting(petId, comment, lat, lng, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'Models/CreateSightings.php', true);
+    xhr.open('POST', 'models/CreateSightings.php', true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -86,7 +86,7 @@ export class SightingsMapAndListAjax {
    */
   reverseLatLngToHumanReadableAddress(lat, lng, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'js/map/ajax-php-call/ReverseLatLngToHumanReadableAddress.php?lat=' + lat + '&lng=' + lng + '&token=' + ajaxToken, true);
+    xhr.open('GET', 'js/map/live-search-endpoints/ReverseLatLngToHumanReadableAddress.php?lat=' + lat + '&lng=' + lng + '&token=' + ajaxToken, true);
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status !== 200) {

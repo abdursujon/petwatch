@@ -1,26 +1,35 @@
 /**
- * SearchAjax handles all Ajax communication for the live search feature.
- * 1. Endpoint one: searchPets() searches pets with filters and pagination
- * 2. Endpoint two: fetchSuggestions() lightweight autocomplete suggestions
- * 3. Endpoint three: fetchPetById() fetches single pet detail
+ * LiveSearchAjax class handles all AJAX communication for the live search feature.
+ * <p>
+ *  This class is designed to be imported in the LiveSearchMediatorApp.js class
+ *  by adding the export keyword to the class declaration.
+ *  This helps us develop a Mediator Design Pattern where possible, establishing a
+ *  many-to-one relationship through a central JavaScript app file.
+ * </p>
+ * This class handles total three AJAX endpoint, they are:
+ * <p>
+ *  1. Endpoint one: searchPets() searches pets with filters and pagination
+ *  2. Endpoint two: fetchSuggestions() handles autocomplete suggestions
+ *  3. Endpoint three: fetchPetById() fetches single pet detail
+ * </p>
  */
 export class LiveSearchAjax {
-  constructor() {
-  }
+  constructor() {}
 
   /**
-   * Ajax endpoint 1 (GET) — Search pets with query, filters, and pagination.
+   * Ajax endpoint 1 (GET) — Search pets with query (species, status etc.), filters, and pagination.
    * Returns ranked, paginated results from the server.
    */
   searchPets(query, species, status, page, limit, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
-    var url = 'js/live-search/ajax-php-call/SearchPets.php?q=' + encodeURIComponent(query)
+
+    // Build the search endpoint url with encoded query parameters and AJAx token by calling the php endpoint SearchPets.
+    var url = 'js/live-search/live-search-endpoints/SearchPets.php?q=' + encodeURIComponent(query)
       + '&species=' + encodeURIComponent(species)
       + '&status=' + encodeURIComponent(status)
       + '&page=' + page
       + '&limit=' + limit
       + '&token=' + ajaxToken;
-
 
     xhr.open('GET', url, true);
     xhr.onreadystatechange = () => {
@@ -41,12 +50,12 @@ export class LiveSearchAjax {
   }
 
   /**
-   * Ajax endpoint 2 (GET) — Fetch lightweight autocomplete suggestions.
+   * Ajax endpoint 2 (GET) — Fetch autocomplete suggestions.
    * Returns only pet names, IDs, species, and photo for the dropdown.
    */
   fetchSuggestions(query, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
-    var url = 'js/live-search/ajax-php-call/SearchSuggestions.php?q=' + encodeURIComponent(query)
+    var url = 'js/live-search/live-search-endpoints/SearchSuggestions.php?q=' + encodeURIComponent(query)
       + '&token=' + ajaxToken;
 
     xhr.open('GET', url, true);
@@ -73,7 +82,7 @@ export class LiveSearchAjax {
    */
   fetchPetById(petId, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
-    var url = 'js/live-search/ajax-php-call/FetchPetById.php?id=' + petId
+    var url = 'js/live-search/live-search-endpoints/FetchPetById.php?id=' + petId
       + '&token=' + ajaxToken;
 
     xhr.open('GET', url, true);

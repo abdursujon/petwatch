@@ -1,7 +1,0 @@
-Ajax: Asysnchronous JavaScript and XML
-Technology Ajax method use is 
-1. HTML
-2. CSS
-3. XML / JSON
-4. XMLHttpRequest 
-5. Js

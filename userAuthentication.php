@@ -1,5 +1,5 @@
 <?php
-require_once('Models/UserAuthentication.php');
+require_once('models/UserAuthentication.php');
 
 /**
  * One-time password hashing utility.

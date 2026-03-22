@@ -4,7 +4,7 @@
  */
 export class SearchValidation {
   constructor() {
-    this.minLength = 2;
+    this.minLength = 1;
     this.maxLength = 100;
   }
 

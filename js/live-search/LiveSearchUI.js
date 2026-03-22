@@ -1,13 +1,20 @@
 /**
- * SearchBar handles the live search UI, debouncing, and result rendering.
- * Uses SearchAjax for server communication and SearchValidation for input sanitisation.
+ * LiveSearchUI handles the live search DOM interactions, debouncing, and result rendering.
+ * <p>
+ *  This class does not call any AJAX endpoints or validate input directly.
+ *  Instead, this class call empty callback method such as onSearchInput,
+ *  onResultSelect, onViewAll, onResultClick
+ *  which the mediator listens to and coordinates with other classes to implement live search UI feature.
+ * </p>
+ * <p>
+ *  Rendering methods (renderSuggestions, renderFullResults) are called by the mediator
+ *  after it receives data from the server.
+ * </p>
  */
 export class LiveSearchUI {
-  constructor(inputId, resultsId, searchAjax, searchValidation) {
+  constructor(inputId, resultsId) {
     this.input = document.getElementById(inputId);
     this.resultsContainer = document.getElementById(resultsId);
-    this.ajax = searchAjax;
-    this.validation = searchValidation;
     this.debounceTimer = null;
     this.debounceDelay = 300;
     this.currentPage = 1;
@@ -17,14 +24,15 @@ export class LiveSearchUI {
 
   /**
    * Initialise event listeners on the search input.
-   * Debounces keyup so we don't fire a request on every keystroke.
+   * Debouncing is implemented so we don't fire a request on every keystroke.
+   * Search will only render when the user stops typing for 300ms (this.debounceDelay = 300).
    */
   initListeners() {
     this.input.addEventListener('keyup', () => {
       clearTimeout(this.debounceTimer);
       this.debounceTimer = setTimeout(() => {
         this.currentPage = 1;
-        this.performSearch();
+        this.onSearchInput(this.input.value);
       }, this.debounceDelay);
     });
 
@@ -37,24 +45,19 @@ export class LiveSearchUI {
   }
 
   /**
-   * Validates input and calls the search endpoint.
+   * Clears the results container when the mediator app calls this method.
+   * The reason is to remove the search result when not needed or invalid.
    */
-  performSearch() {
-    let query = this.validation.validateQuery(this.input.value);
+  clearResults() {
+    this.resultsContainer.innerHTML = '';
+  }
 
-    if (!query) {
-      this.resultsContainer.innerHTML = '';
-      return;
-    }
-
-    this.ajax.fetchSuggestions(query,
-      (suggestions) => {
-        this.renderSuggestions(suggestions, query);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+  /**
+   * Clears the input field when the mediator app calls this method.
+   * The reason is to reset the search bar after the user clicks a result.
+   */
+  clearInput() {
+    this.input.value = '';
   }
 
   /**
@@ -69,12 +72,14 @@ export class LiveSearchUI {
       return;
     }
 
+    // Create a regex that matches all search query anywhere in a string, which is case insensitive.
     let regex = new RegExp('(' + query + ')', 'gi');
 
     suggestions.forEach((pet) => {
       let item = document.createElement('div');
       item.className = 'search-result-item';
 
+      // Search result for pet name, species, breed, color, comment, and address
       let highlightedName = pet.name.replace(regex, '<strong>$1</strong>');
       let highlightedSpecies = pet.species.replace(regex, '<strong>$1</strong>');
       let highlightedBreed = pet.breed.replace(regex, '<strong>$1</strong>');
@@ -82,64 +87,40 @@ export class LiveSearchUI {
       let highlightedComment = pet.comment.replace(regex, '<strong>$1</strong>');
       let highlightedAddress = pet.address ? pet.address.replace(regex, '<strong>$1</strong>') : '';
 
-      item.innerHTML = `
-                  <img src="${pet.photo_url}" alt="${pet.name}" class="search-result-img"/>
-                  <div class="search-result-info">
-                      <span class="search-result-name">${highlightedName}</span>
-                      <span class="search-result-species">${highlightedSpecies} · ${highlightedBreed} · ${highlightedColor}</span>
-                      <span class="search-result-comment">${highlightedComment}</span>
-                      <span class="search-result-address">${highlightedAddress}</span>
-                  </div>
-              `;
+      // Render matched suggestions
+      item.innerHTML = `                                                                                                                                                                                                          
+          <img src="${pet.photo_url}" alt="${pet.name}" class="search-result-img"/>                                                                                                                                       
+          <div class="search-result-info">
+          <span class="search-result-name">${highlightedName}</span>                                                                                                                                                  
+          <span class="search-result-species">${highlightedSpecies} · ${highlightedBreed} · ${highlightedColor}</span>
+          <span class="search-result-comment">${highlightedComment}</span>                                                                                                                                            
+          <span class="search-result-address">${highlightedAddress}</span>
+           </div>                                                                                                                                                                                                          
+      `;
 
       item.addEventListener('click', () => {
-        let petId = this.validation.validatePetId(pet.id);
-        if (!petId) return;
-
-        this.ajax.fetchPetById(petId,
-          (petData) => {
-            this.resultsContainer.innerHTML = '';
-            this.input.value = '';
-            this.onResultClick(petData);
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
+        this.onResultSelect(pet.id);
       });
 
+      // Add the suggestion to the dropdown result of live search so it appears on the result lists.
       this.resultsContainer.appendChild(item);
     });
 
     let viewAll = document.createElement('div');
     viewAll.className = 'search-view-all';
     viewAll.textContent = 'View all results for "' + query + '"';
+
+    // When user clicks on view all result input items, it tells mediator app to fetch all paginated search result.
     viewAll.addEventListener('click', () => {
-      this.showFullResults(query);
+      this.onViewAll(query);
     });
+
+    // Add the view all button at the bottom of the suggestions dropdown lists.
     this.resultsContainer.appendChild(viewAll);
   }
 
   /**
-   * Fetches full paginated search results.
-   * Called when user clicks "View all results".
-   */
-  showFullResults(query) {
-    query = this.validation.validateQuery(query);
-    if (!query) return;
-
-    this.ajax.searchPets(query, '', '', this.currentPage, this.limit,
-      (data) => {
-        this.renderFullResults(data, query);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
-
-  /**
-   * Renders the full search results with pagination info.
+   * Renders the full search results with pagination.
    */
   renderFullResults(data, query) {
     this.resultsContainer.innerHTML = '';
@@ -149,6 +130,7 @@ export class LiveSearchUI {
       return;
     }
 
+    // Loop through the search result, create the html card with the pet details
     data.results.forEach((pet) => {
       let item = document.createElement('div');
       item.className = 'search-result-item search-full-result';
@@ -159,20 +141,20 @@ export class LiveSearchUI {
       );
 
       item.innerHTML = `
-                  <img src="${pet.photo_url}" alt="${pet.name}" class="search-result-img"/>
-                  <div class="search-result-info">
-                      <span class="search-result-name">${highlightedName}</span>
-                      <span class="search-result-species">${pet.species} - ${pet.breed}</span>
-                      <span class="search-result-address">${pet.address || 'Unknown location'}</span>
-                  </div>
-              `;
+           <img src="${pet.photo_url}" alt="${pet.name}" class="search-result-img"/>
+           <div class="search-result-info">                                                                                                                                                                                
+               <span class="search-result-name">${highlightedName}</span>
+               <span class="search-result-species">${pet.species} - ${pet.breed}</span>                                                                                                                                    
+               <span class="search-result-address">${pet.address || 'Unknown location'}</span>                                                                                                                             
+           </div>
+      `;
 
+      // Click handler which tells the mediator app the user selected a pet.
       item.addEventListener('click', () => {
-        this.resultsContainer.innerHTML = '';
-        this.input.value = '';
         this.onResultClick(pet);
       });
 
+      // Add each card to the results container that is matched.
       this.resultsContainer.appendChild(item);
     });
 
@@ -183,17 +165,25 @@ export class LiveSearchUI {
       loadMore.textContent = 'Load more results (' + data.total + ' total)';
       loadMore.addEventListener('click', () => {
         this.currentPage++;
-        this.showFullResults(query);
+        this.onViewAll(query);
       });
+
+      // Add loadmore button to the live search feature.
       this.resultsContainer.appendChild(loadMore);
     }
   }
 
   /**
-   * Callback when a search result is clicked.
-   * Set from outside (e.g. MediatorApp) to connect search to the map.
+   * The next four methods are empty by default and overridden by the mediator app.
+   * The mediator assigns its own logic to each event so that the UI class does not
+   * need to know about AJAX or validation which helps us maintain many to one relationship
+   * for the Mediator Design pattern.
    */
-  onResultClick(petData) {
-    // Default — overridden by MediatorApp to pan map to pet location
-  }
+  onSearchInput(rawQuery) {}
+
+  onResultSelect(petId) {}
+
+  onViewAll(query) {}
+
+  onResultClick(petData) {}
 }

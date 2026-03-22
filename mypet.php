@@ -1,12 +1,12 @@
 <?php
 session_start();
-require_once('Models/Database.php');
-require_once('Models/PetDataSets.php');
+require_once('models/Database.php');
+require_once('models/PetDataSets.php');
 
 if (empty($_SESSION['user_id'])) {
   $view = new stdClass();
   $view->errorMessage = "You must log in to add and manage pet";
-  require_once('Views/login.phtml');
+  require_once('views/login.phtml');
   exit();
 }
 
@@ -179,4 +179,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $view->pets = $petsDataSet->getPetByUserID($user_id);
-require_once('Views/mypet.phtml');
+require_once('views/mypet.phtml');

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once('js/ValidateAjaxToken.php');
-require_once('Models/CreateSightings.php');
+require_once('models/CreateSightings.php');
 
 $view = new stdClass();
 $view->title = "sightings";
@@ -10,7 +10,7 @@ $view->errorMessage = '';
 
 if (empty($_SESSION['user_id'])) {
   $view->errorMessage = "You must log in to create a sighting.";
-  require_once('Views/login.phtml');
+  require_once('views/login.phtml');
   exit();
 }
 $userId = (int)$_SESSION['user_id'];
@@ -137,4 +137,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $view->pets = $createSighting->getAllLostPets();
 $view->sightings = $createSighting->getSightingsByUser($userId);
-require_once('Views/createSightings.phtml');
+require_once('views/createSightings.phtml');
