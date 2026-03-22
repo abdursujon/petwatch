@@ -112,11 +112,11 @@ class MapMediatorApp {
       if (this.geolocation.lat && this.geolocation.lng) {
         this.petMap.setSightingLocation(this.geolocation.lat, this.geolocation.lng);
       } else {
-        alert('Could not get your location. Please click on the map instead to choose a location.');
+        alert('Could not get your location. Please check if you allowed location or click on the map instead to choose a location.');
       }
     };
 
-    // Fly map to user's GPS location when "Locate Me" button is clicked
+    // Fly map to user's GPS location when "Select Your Location" button is clicked
     this.petMap.onLocateMe = () => {
       if (this.geolocation.lat && this.geolocation.lng) {
         this.petMap.map.flyTo([this.geolocation.lat, this.geolocation.lng], 16);
@@ -138,14 +138,14 @@ class MapMediatorApp {
       }, 800);
     };
 
-    // When "Add A New Sighting" is clicked from a card, enter sighting mode on map
+    // When "Add Sighting" is clicked from a card, enter sighting mode on map
     this.sightingList.onCreateSighting = (petId) => {
       document.getElementById('map').scrollIntoView({behavior: 'smooth'});
       this.petMap.enterCreateSightingMode(petId);
     };
 
     // Start GPS tracking and center map on user location.
-    // Skip this location if routed from live search intead focus on searched pet location.
+    // Skip this location if routed from live search instead focus on searched pet location.
     if (!focusPetId) {
       let hasCentered = false;
       this.geolocation.startTracking(this.petMap.map, (lat, lng) => {

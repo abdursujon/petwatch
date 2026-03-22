@@ -42,7 +42,10 @@ export class SightingsMapAndListAjax {
   }
 
   /**
-   * Ajax endpoint two (POST)
+   * Ajax endpoint two (POST) - submits a new sighting to CreateSightings.php controller
+   * Sends pet id, comment, coordinates, and address.
+   * On success of the submit, clear the cached sightings so the next fetch gets fresh data.
+   * On failure, returns the server error message via onError callback.
    */
   submitNewSighting(petId, comment, lat, lng, address, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
@@ -80,13 +83,14 @@ export class SightingsMapAndListAjax {
   }
 
   /**
-   * Ajax endpoint 3 (GET)
-   *  reverseLatLngToHumanReadableAddress geocode lat/lng to human readable address.
-   *  This ajax is called when user create a new sighting by choosing a location in the map by clicking or by choosing their own locatin.
+   * Ajax endpoint 3 (GET) - converts lat/lng to a human readable address
+   * through the Nominatim reverse geocode php endpoint.
+   *  This ajax endpoint is called when user create a new sighting by choosing a
+   *  location in the map by clicking or by choosing their own location.
    */
   reverseLatLngToHumanReadableAddress(lat, lng, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'js/map/live-search-endpoints/ReverseLatLngToHumanReadableAddress.php?lat=' + lat + '&lng=' + lng + '&token=' + ajaxToken, true);
+    xhr.open('GET', 'js/map/pet-map-and-list-endpoints/ReverseLatLngToHumanReadableAddress.php?lat=' + lat + '&lng=' + lng + '&token=' + ajaxToken, true);
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status !== 200) {

@@ -1,6 +1,20 @@
+/**
+ * This class is design to render pet sightings data as a scrollable list of lost pet cards.
+ * The list are locoted below the map.
+ * Supports filtering of the pet sighting list by name, date, and species.
+ * Lists are loaded in batches of 20 via infinite scroll to avoid rendering all lists at the same time.
+ * The list consists of "Creat Sighting" button which notifies the mediator app via
+ * onCardClick() and onCreateSighting() callbacks.
+ */
 import {MapAndSightingDataValidation} from './MapAndSightingDataValidation.js';
 
 export class SightingList {
+
+  /**
+   * Constructor of the class sets up the sighting list container, initialise filter listeners.
+   * It also configures batch loading to render 20 sighting lists at a time.
+   * @param containerId - HTML element id of the card list container.
+   */
   constructor(containerId) {
     this.container = document.getElementById(containerId);
     this.allData = [];
@@ -9,6 +23,13 @@ export class SightingList {
     this.initialiseFilters();
   }
 
+
+  /**
+   * Stores sighting data from the mediator.
+   * Copy the data for filtering, applies current filters.
+   * Also enable infinite scroll pagination.
+   * @param data
+   */
   setSightingData(data) {
     this.allData = data;
     this.filteredData = [...data];
@@ -16,6 +37,8 @@ export class SightingList {
     this.initialiseInfiniteScroll();
   }
 
+
+  // Listen for changes on species, name and date filter dropdowns to re-apply filters.
   initialiseFilters() {
     document.getElementById('filter-species').addEventListener('change', () => {
       this.applyFilters();
@@ -29,6 +52,8 @@ export class SightingList {
     });
   }
 
+
+  // Apply the filter that user has selected on the front end.
   applyFilters() {
     let species = document.getElementById('filter-species').value;
     let nameSort = document.getElementById('filter-name').value;
@@ -58,10 +83,16 @@ export class SightingList {
     this.container.innerHTML = '';
     this.displayedCount = 0;
     this.renderCards();
-
   }
 
-  // render all sightings to the page
+
+  /**
+   * Render the next batch of 20 sighting cards from the filtered data.
+   * Each card shows pet photo, name, sighting comment, breed, and address.
+   * Also enable user to click the "Add A New Sighting" button when logged in.
+   * If the new sighting button is clicked, the method notifies mediator app via
+   * onCreateSighting() callback.
+   */
   renderCards() {
     let batch = this.filteredData.slice(this.displayedCount, this.displayedCount + this.nextSizeOfBatchLoadedSightings);
 
@@ -113,6 +144,8 @@ export class SightingList {
     this.displayedCount += batch.length;
   }
 
+
+  // Load the next 20 list of sightings when user is withing 200px of the bottom of the page.
   initialiseInfiniteScroll() {
     window.addEventListener('scroll', () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {

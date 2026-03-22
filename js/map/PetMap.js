@@ -1,6 +1,20 @@
+/**
+ * The PetMap class handles rendering for the leaflet pet map.
+ * Displays the pet marker and manage the create pet sightings panel on the map.
+ * It also provides geolocation button "Select Your Location" helping focus on user location
+ * when they pan out from their location.
+ */
 import {MapAndSightingDataValidation} from './MapAndSightingDataValidation.js';
 
 export class PetMap {
+
+  /**
+   * Constructor initalise the leaflet pet map, with tile layer, marker clustering and UI controls.
+   * @param elementId - HTML element id to render the map into
+   * @param lat - default lat in salford university
+   * @param lng - default long in salford university
+   * @param zoom - intialise zoom level
+   */
   constructor(elementId, lat, lng, zoom) {
     this.map = L.map(elementId, {maxZoom: 19}).setView([lat, lng], zoom);
     this.popupOption = {"closeButton": false};
@@ -16,6 +30,8 @@ export class PetMap {
     }
   }
 
+
+  // Load OpenStreetMap tile layer onto the map with max zoom of 19
   initialTileLayer() {
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -23,15 +39,13 @@ export class PetMap {
     }).addTo(this.map);
   }
 
-  /**
-   * Ajax 1 endpoint 1 (GET)
-   * Fetch all data once, then we only render what is on the view radius of the user.
-   * Avoid loading alls hundreds of pets marker on the map which maps the map really slow.
-   */
+
+  // Stores sighting data from the mediator and renders marker on the map
   setPetDataOnMap(data) {
     this.allData = data;
     this.renderVisibleMarkers();
   }
+
 
   /**
    * Renders markers for only within visible area of the map.
@@ -45,23 +59,25 @@ export class PetMap {
     this.markers = [];
     this.allData.forEach((pets) => {
 
-      // Build popup HTML card, create a new sightings button only shows user is logged in.
-      let markerText = `
-      <div class="pet-marker mb-3">
-          <img src="${MapAndSightingDataValidation.escapeHTML(pets.photo_url)}" alt="${MapAndSightingDataValidation.escapeHTML(pets.name)}"/>                                                                                       
-          <div class="p-2">
-              <p class="pet-name fw-bold mb-1">${MapAndSightingDataValidation.escapeHTML(pets.name)}</p>                                                                                                                            
-              <span class="badge ${pets.status === 'lost' ? 'bg-danger' : 'bg-success'} mb-1">${MapAndSightingDataValidation.escapeHTML(pets.status)}</span>
-              <p class="pet-location mb-1">Last seen: ${MapAndSightingDataValidation.escapeHTML(pets.address) || 'Unknown location'}</p>
-              <p class="pet-sighting mb-1">${MapAndSightingDataValidation.escapeHTML(pets.comment)}</p>
-              ${isLoggedIn ? `
-              <input type="hidden" name="pet-id" value="${MapAndSightingDataValidation.escapeHTML(pets.id)}"/>
-              <button type="submit" class="btn btn-primary btn-sm py-0 w-75 add-sighting-btn text-start mt-1" style="font-size: 14px;">Create Sighting</button>   
-              ` : '<p class="text-muted mb-0"><small>Log in to add a sighting</small></p>'}
-          </div>
-      </div>
-  `;
+      // Build popup HTML card, create sighting button only shows if user is logged in.
+      let markerText = `                                                                                                                                                                                                          
+          <div class="pet-marker mb-3">
+            <img src="${MapAndSightingDataValidation.escapeHTML(pets.photo_url)}" alt="${MapAndSightingDataValidation.escapeHTML(pets.name)}"/>
+            <div class="p-2">                                                                                                                                                                                                       
+              <p class="pet-name fw-bold mb-1">${MapAndSightingDataValidation.escapeHTML(pets.name)}</p>
+              <span class="badge ${pets.status === 'lost' ? 'bg-danger' : 'bg-success'} mb-1">${MapAndSightingDataValidation.escapeHTML(pets.status)}</span>                                                                        
+              <p class="pet-location mb-1">Last seen: ${MapAndSightingDataValidation.escapeHTML(pets.address) || 'Unknown location'}</p>                                                                                            
+              <p class="pet-sighting mb-1">${MapAndSightingDataValidation.escapeHTML(pets.comment)}</p>                                                                                                                             
+              ${isLoggedIn ? `                                                                                                                                                                                                      
+              <input type="hidden" name="pet-id" value="${MapAndSightingDataValidation.escapeHTML(pets.id)}"/>                                                                                                                      
+              <button type="submit" class="btn btn-primary btn-sm py-0 w-75 add-sighting-btn text-start mt-1" style="font-size: 14px;">Create Sighting</button>                                                                     
+              ` : '<p class="text-muted mb-0"><small>Log in to create sighting</small></p>'}                                                                                                                                        
+            </div>                                                                                                                                                                                                                  
+          </div>                                                                                                                                                                                                                    
+        `;
 
+      // Create a marker at the pet coordinates, add it to cluster group.
+      // Also bind the popup card autoPan settings and open the popup on hover
       let marker = L.marker([pets.latitude, pets.longitude])
         .addTo(this.clusterGroup)
         .bindPopup(markerText, {
@@ -71,7 +87,6 @@ export class PetMap {
           autoPanPaddingTopLeft: [50, 100],
           autoPanPaddingBottomRight: [50, 50]
         })
-
         .on('mouseover', event => {
           event.target.openPopup();
         });
@@ -81,6 +96,16 @@ export class PetMap {
     });
   }
 
+
+  /**
+   * Enters create sighting mode for the selected pet by user.
+   * Clear existing markers and popups.
+   * Then build a floating panel with the selected pet information.
+   * On submit, validates comment, coordinates, and pet id.
+   * Next it notifies of the change though central app MediatorMap.
+   * On cancel, exits sighting mode and restores the map with markers.
+   * @param petId
+   */
   enterCreateSightingMode(petId) {
     this.sightingMode = true;
     this.sightingPetId = petId;
@@ -103,9 +128,9 @@ export class PetMap {
     panel.className = 'shadow-lg py-3 px-3'
     panel.innerHTML = `                                                                                                                                                                                                               
       <div class="sighting-pet-info create-pet mb-3">                                                                                                                                                                                   
-      <img src="${MapAndSightingDataValidation.escapeHTML(pet.photo_url)}" alt="${MapAndSightingDataValidation.escapeHTML(pet.name)}" />                                                                                            
-      <h6 class="mt-2 mb-0 fw-bold">${MapAndSightingDataValidation.escapeHTML(pet.name)}</h6>                                                                                                                                       
-  </div> 
+        <img src="${MapAndSightingDataValidation.escapeHTML(pet.photo_url)}" alt="${MapAndSightingDataValidation.escapeHTML(pet.name)}" />                                                                                            
+        <h6 class="mt-2 mb-0 fw-bold">${MapAndSightingDataValidation.escapeHTML(pet.name)}</h6>                                                                                                                                       
+      </div> 
       <h6 class="fw-bold">Create New Sighting</h6>
       <p class="mb-2 font-bold" style="font-size: 13px;">📍 Click on the map to report pet location.</p>
       <button id="sighting-use-location" class="btn btn-outline-primary btn-sm mb-2 w-100">
@@ -143,7 +168,7 @@ export class PetMap {
       }
     });
 
-    // Post new sighting to viewSighting.php
+    // Validate user input, then notify mediator to submit the new sighting to the server.
     document.getElementById('sighting-submit').addEventListener('click', () => {
       let comment = document.getElementById('sighting-comment').value.trim();
       let commentError = MapAndSightingDataValidation.validateComment(comment);
@@ -182,8 +207,13 @@ export class PetMap {
     });
   }
 
+
   /**
-   * Set the sighting location
+   * Set the sighting location chosen by the user through click on the map or geolocation.
+   * Stores the coordinates, displays them on the panel to the user.
+   * The coordiantes are converted to human readable address on the panel which user can view.
+   * Enable the submit button when location is selected.
+   * A temporary marker on the map shows when user select any location before submit.
    */
   setSightingLocation(lat, lng) {
     this.sightingLatLong = {lat: lat, lng: lng};
@@ -198,10 +228,21 @@ export class PetMap {
         this.sightingAddress = lat.toFixed(5) + ', ' + lng.toFixed(5);
       });
     }
+
+    // Enable submit when location is set
+    document.getElementById('sighting-submit').disabled = false;
+    // Remove old temporary marker if user re-clicks on a different location on the map
+    if (this.sightingMarker) {
+      this.map.removeLayer(this.sightingMarker);
+    }
+    this.sightingMarker = L.marker([lat, lng]).addTo(this.map);
   }
 
+
   /**
-   * Exit sighting mode.
+   * Exit create sighting mode.
+   * This method also remove the temporary map click listener, clear the temporary markers.
+   * It also clear the create sighting panel, then re-render the pet markers on the map.
    */
   exitSightingMode() {
     this.sightingMode = false;
@@ -218,6 +259,12 @@ export class PetMap {
     this.renderVisibleMarkers();
   }
 
+
+  /**
+   * Uses event delegation on the map container to listen for "Create Sighting" button clicks.
+   * When button is clicked, extract the pet id from the hidden input and enters the create sighting mode
+   * for that specific pet that user selected.
+   */
   initialiseSightingButtonDelegate() {
     this.map.getContainer().addEventListener('click', (e) => {
       let btn = e.target.closest('.add-sighting-btn');
@@ -229,6 +276,11 @@ export class PetMap {
     });
   }
 
+  /**
+   * Wires the "Select Your Location" button to notify the mediator map app
+   * through onLocateMe() callback when user click the button.
+   * This method helps us re-focus on the user location when user pan out from their location.
+   */
   addLocateMeButton() {
     let btn = document.getElementById('locate-me-btn');
     if (!btn) return;
