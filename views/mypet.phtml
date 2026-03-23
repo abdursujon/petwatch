@@ -300,10 +300,7 @@ require_once('template/header.phtml');
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal utilising boostrap is implemented which is used to
-  confirm delete to avoid deleting important information by mis click
-  Note: This is an optional implementation and I have used a small javaScript snippet.
-  -->
+
   <div class="modal fade" id="deleteConfirmModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg rounded-3">
@@ -346,17 +343,11 @@ require_once('template/header.phtml');
 
   <!-- JavaScript snippet to the modal and show relevant information-->
   <script>
-      /*Get the delete confirmation modal element*/
       const deleteModal = document.getElementById('deleteConfirmModal');
-      /* Add even listener when the modal is about to be shown */
       deleteModal.addEventListener('show.bs.modal', event => {
-          /*Button to triggers the modal */
           const button = event.relatedTarget;
-          /* Pass the pet id into the form which then will be handled by php
-          script to delete the pet information*/
           document.getElementById('deletePetId').value =
               button.getAttribute('data-pet-id');
-          /* Show the pet name on the modal  */
           document.getElementById('deletePetName').textContent =
               button.getAttribute('data-pet-name');
       });

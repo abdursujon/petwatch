@@ -53,8 +53,8 @@ function validateSightingsData($input): array
 
 /**
  * Handle AJAX sightings submission from PetMap.js map popup.
- * First this block validates the CSRF token, and sanitise the POST data (pet id , comment etc.)
- * Also, return JSON success or error message.
+ * We first validate the CSRF token, and sanitise the POST data (pet id , comment etc.)
+ * Then return JSON success or error message.
  */
 if ($_SERVER['REQUEST_METHOD'] === 'POST'
   && !empty($_SERVER['HTTP_X_REQUESTED_WITH'])

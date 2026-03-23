@@ -62,23 +62,40 @@ export class PetMap {
       // Build popup HTML card, create sighting button only shows if user is logged in.
       let markerText = `                                                                                                                                                                                                          
           <div class="pet-marker mb-3">
-            <img src="${MapAndSightingDataValidation.escapeHTML(pets.photo_url)}" alt="${MapAndSightingDataValidation.escapeHTML(pets.name)}"/>
+            <img src="${MapAndSightingDataValidation.escapeHTML(pets.photo_url)}" 
+            alt="${MapAndSightingDataValidation.escapeHTML(pets.name)}"/>
             <div class="p-2">                                                                                                                                                                                                       
               <p class="pet-name fw-bold mb-1">${MapAndSightingDataValidation.escapeHTML(pets.name)}</p>
-              <span class="badge ${pets.status === 'lost' ? 'bg-danger' : 'bg-success'} mb-1">${MapAndSightingDataValidation.escapeHTML(pets.status)}</span>                                                                        
-              <p class="pet-location mb-1">Last seen: ${MapAndSightingDataValidation.escapeHTML(pets.address) || 'Unknown location'}</p>                                                                                            
+              <span class="badge ${pets.status === 'lost' ? 'bg-danger' : 'bg-success'} mb-1">
+                ${MapAndSightingDataValidation.escapeHTML(pets.status)}
+              </span>                                                                        
+              <p class="pet-location mb-1">
+              Last seen: ${MapAndSightingDataValidation.escapeHTML(pets.address) || 'Unknown location'}
+              </p>                                                                                            
               <p class="pet-sighting mb-1">${MapAndSightingDataValidation.escapeHTML(pets.comment)}</p>                                                                                                                             
               ${isLoggedIn ? `                                                                                                                                                                                                      
               <input type="hidden" name="pet-id" value="${MapAndSightingDataValidation.escapeHTML(pets.id)}"/>                                                                                                                      
-              <button type="submit" class="btn btn-primary btn-sm py-0 w-75 add-sighting-btn text-start mt-1" style="font-size: 14px;">Create Sighting</button>                                                                     
+              <button type="submit" class="btn btn-primary btn-sm py-0 w-75 add-sighting-btn text-start mt-1" style="font-size: 14px;">
+              Create Sighting
+              </button>                                                                     
               ` : '<p class="text-muted mb-0"><small>Log in to create sighting</small></p>'}                                                                                                                                        
             </div>                                                                                                                                                                                                                  
           </div>                                                                                                                                                                                                                    
         `;
 
-      // Create a marker at the pet coordinates, add it to cluster group.
+      // Create a custom icon for pet markers using each pets own image.
+      let petIcon = L.divIcon({
+        html: `<img src="${MapAndSightingDataValidation.escapeHTML(pets.photo_url)}" 
+               alt="${MapAndSightingDataValidation.escapeHTML(pets.name)}" />`,
+        className: 'pet-marker-icon',
+        iconSize: [40, 52],
+        iconAnchor: [20, 52],
+        popupAnchor: [0, -52]
+      });
+
+      // Create a marker at the pet coordinates, and add it to cluster group.
       // Also bind the popup card autoPan settings and open the popup on hover
-      let marker = L.marker([pets.latitude, pets.longitude])
+      let marker = L.marker([pets.latitude, pets.longitude], {icon: petIcon})
         .addTo(this.clusterGroup)
         .bindPopup(markerText, {
           autoClose: true,

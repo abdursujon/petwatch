@@ -5,11 +5,11 @@ otherwise show error message-->
 <div class="row justify-content-center mt-5">
   <div class="col-12 col-md-6">
     <?php if (!empty($view->successMessage)): ?>
-      <div class="alert alert-success text-center">
+      <div class="alert alert-success text-center mt-5">
         <?= htmlspecialchars($view->successMessage) ?>
       </div>
     <?php elseif (!empty($view->errorMessage)): ?>
-      <div class="alert alert-danger text-center">
+      <div class="alert alert-danger text-center mt-5">
         <?= htmlspecialchars($view->errorMessage) ?>
       </div>
     <?php endif; ?>
@@ -22,9 +22,6 @@ otherwise show error message-->
     <div class="col-12 col-md-6 shadow-lg p-4 mb-5 bg-white rounded">
       <h2 class="mb-4">Report a New Sighting</h2>
 
-      <!-- Determine which pet id the user selected.
-           Using this, we will display the image of the chosen pet when selected.
-           This demonstrates how to efficiently retrieve and display data from DB. -->
       <?php
       $selectedPet = null;
       $selectedPetId = $view->selectedPetId ?? null;
@@ -170,9 +167,9 @@ otherwise show error message-->
                             <div class="col-md-12">
                               <label class="form-label small text-muted">Comment</label>
                               <textarea name="sightings[<?= $sightingId ?>][comment]"
-                                        class="form-control shadow-sm" rows="2">
-                                <?= htmlspecialchars($sighting['comment'] ?? '') ?>
-                              </textarea>
+                                        class="form-control shadow-sm"
+                                        rows="2"
+                              ><?= htmlspecialchars($sighting['comment'] ?? '') ?></textarea>
                             </div>
 
                             <!--Latitude-->
@@ -242,6 +239,7 @@ otherwise show error message-->
     </div>
   </div>
 </div>
+
 <script>
   const allPets = <?= json_encode($view->pets) ?>;
   const searchInput = document.getElementById('pet-search');
@@ -295,4 +293,5 @@ otherwise show error message-->
     }
   });
 </script>
+
 <?php require_once('template/footer.phtml'); ?>

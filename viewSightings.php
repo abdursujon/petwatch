@@ -1,7 +1,7 @@
 <?php
 /**
  * This controller handles sightings view page.
- * The page laods all sightings lists and the pet map.
+ * The page loads all sightings lists and the pet map.
  */
 session_start();
 require_once('models/SightingsDataSets.php');

@@ -24,6 +24,7 @@ require_once(__DIR__ . '/../../models/Database.php')
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- This script help us test the project both in poseidon and in localhost by switching url path naming convention -->
   <?php
   $base = (strpos($_SERVER['HTTP_HOST'], 'poseidon') !== false) ? '/clientserver/' : '/';
   ?>
@@ -90,7 +91,7 @@ require_once(__DIR__ . '/../../models/Database.php')
             </li>
             <li class="nav-item me-lg-3">
               <a class="nav-link"
-                 href="viewSightings.php">Sightings Map & List</a>
+                 href="viewSightings.php">Sightings Map & Lists</a>
             </li>
 
             <!-- Show Add & Manage Pets if role is Owner -->
