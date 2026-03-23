@@ -51,7 +51,7 @@ export class SightingsMapAndListAjax {
    */
   submitNewSighting(petId, comment, lat, lng, address, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'models/CreateSightings.php', true);
+    xhr.open('POST', 'createSightings.php', true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 

@@ -85,7 +85,7 @@ class MapMediatorApp {
     // Calls method of SightingsMapAndListAjax method submitNewSighting to post the new sighting
     // Then refresh map and list data on success to update the map with new sightings without page reload.
     this.petMap.onSightingSubmit = (petId, comment, lat, lng, address) => {
-      this.ajax.submitNewSighting(petId, comment, lat, lng,
+      this.ajax.submitNewSighting(petId, comment, lat, lng, address,
         (result) => {
           alert('Sighting added successfully.');
           this.ajax.cachedSightings = null;

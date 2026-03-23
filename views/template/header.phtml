@@ -24,6 +24,10 @@ require_once(__DIR__ . '/../../models/Database.php')
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <?php
+  $base = (strpos($_SERVER['HTTP_HOST'], 'poseidon') !== false) ? '/clientserver/' : '/';
+  ?>
+  <base href="<?= $base ?>">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport"
