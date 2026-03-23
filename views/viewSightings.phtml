@@ -2,12 +2,14 @@
 require_once('template/header.phtml');
 ?>
 
+<!-- The container which loads the pet map on view sightings page. -->
 <div id="map" class="container-fluid">
   <button id="locate-me-btn" class="btn btn-primary shadow-sm">
     Select Your Location
   </button>
 </div>
 
+<!-- The container which loads filters UI in the view sightings page -->
 <div class="container">
   <div class="row g-2 align-items-center">
     <div class="col-12 col-md-auto"><h3 class="mb-2 mb-md-0">Apply Filters</h3></div>
@@ -34,16 +36,25 @@ require_once('template/header.phtml');
       </select>
     </div>
   </div>
-
 </div>
+
+<!-- The container which loads sighting list in the website. -->
 <div class="container mb-3">
   <div class="row" id="sighting-container"></div>
 </div>
+
 <!--Allow java script to know wether a user is logged in. Without this javascript does not know if a user is logged in. -->
 <script>
     const isLoggedIn = <?php echo !empty($_SESSION['loggedin']) ? 'true' : 'false'; ?>;
 </script>
+
+<!-- Leaflet js file which handles core map rendering for example tiles, markers, popups, zoom etc. -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Leaflet js file which helps handle the clustering in pet map view -->
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+<!-- Custom js app which handles map custom functinality according to the assessment brief. -->
 <script type="module" src="../js/map/MapMediatorApp.js"></script>
+
 <?php require_once('template/footer.phtml'); ?>

@@ -15,8 +15,8 @@ if (empty($_SESSION['user_id'])) {
 }
 $userId = (int)$_SESSION['user_id'];
 
-
 $createSighting = new createSightings();
+
 
 /**
  * Validates and sanitizes sighting input.
@@ -51,7 +51,11 @@ function validateSightingsData($input): array
 }
 
 
-// Handle AJAX request from PetMap.js popup
+/**
+ * Handle AJAX sightings submission from PetMap.js map popup.
+ * First this block validates the CSRF token, and sanitise the POST data (pet id , comment etc.)
+ * Also, return JSON success or error message.
+ */
 if ($_SERVER['REQUEST_METHOD'] === 'POST'
   && !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
   && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
@@ -86,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
   }
   exit();
 }
+
 
 /**
  * Handles form-based POST actions for sightings page.

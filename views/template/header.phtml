@@ -8,7 +8,12 @@ require_once(__DIR__ . '/../../models/Database.php')
 ?>
 
 <script>
-    const ajaxToken = "<?php
+  /**
+   * Generate a random 20 character string used as CSRF token and store it in the session.
+   * Then expose the token to JS so AJAX can send it for verification.
+   * @type {string}
+   */
+  const ajaxToken = "<?php
       if (!isset($_SESSION['ajaxToken'])) {
         $_SESSION['ajaxToken'] = substr(str_shuffle(MD5(microtime())), 0, 20);
       }
@@ -34,12 +39,15 @@ require_once(__DIR__ . '/../../models/Database.php')
         rel="stylesheet"
         integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
         crossorigin="anonymous">
+
   <!--Google font-->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <!-- Leaflet CSS header -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+
   <!--Custom CSS links-->
   <link href="css/index.css" rel="stylesheet">
   <link href="css/login.css" rel="stylesheet">
@@ -100,7 +108,7 @@ require_once(__DIR__ . '/../../models/Database.php')
             </li>
           </ul>
 
-          <!-- Header live search -->
+          <!-- Header live search UI -->
           <div class="search-wrapper w-100 w-lg-50 my-2 my-lg-0 d-flex align-items-center"
                style="max-width: 400px; position: relative;">
             <div class="input-group input-group-md w-100">
@@ -113,6 +121,7 @@ require_once(__DIR__ . '/../../models/Database.php')
             <div id="live-search-results" class="search-results-dropdown"></div>
           </div>
 
+          <!--Nav links-->
           <ul class="navbar-nav d-flex mb-2 mt-3 mt-lg-0 mb-lg-0">
             <!-- If logged in, show user and logout -->
             <?php if (
@@ -125,8 +134,8 @@ require_once(__DIR__ . '/../../models/Database.php')
                   <?= htmlspecialchars($_SESSION['username']) ?>
                   is logged in
                   <span class="badge bg-warning text-dark">
-           (Role: <?= $role ?>)
-          </span>
+                  (Role: <?= $role ?>)
+                  </span>
                 </p>
               </li>
               <li class="nav-item mx-0 mx-lg-2 my-lg-4 my-xl-2">
@@ -147,6 +156,7 @@ require_once(__DIR__ . '/../../models/Database.php')
       </div>
     </nav>
   </header>
+  <!-- Live search app wired in header which makes it avaiable across all pages in the website. -->
   <script type="module" src="js/live-search/LiveSearchMediatorApp.js"></script>
   <main class="flex-shrink-0">
 

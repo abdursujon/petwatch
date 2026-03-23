@@ -1,117 +1,26 @@
-Live Link: http://sickly-impostors.poseidon.salford.ac.uk/clientserver/viewSightings.php
+# petWatch
 
-11Feature One: Live petMap
-![Map design](images/img_1.png)
+A community-driven web application that helps pet owners find their lost pets through crowd-sourced sighting reports and an interactive map.
 
-1. Interactive live mapping
-2. It needs to allow users to list/view missing pets with their
-   stored sighting location as a list and on a petMap with a marker and marker pop-up info
-   box using mapping code techniques covered in the lectures and workshops.
-   The petMap should initially centre on the users own location using geolocation techniques covered in
-   the workshops.
+## What It Does
 
-3. For authenticated users each missing pet record should be displayed with a user
-   interface that allows for adding a sighting – similar to a review on Amazon or
-   TripAdvisor. e.g. “spotted near the piccadilly tram stop”, “seen at the roadside next to
-   McDonalds”. The sighting comment should be stored in the databased created for
-   DRAFT version Assignment 1. Higher marks will be gained if well coded and structured AJAX techniques
-   are used for this.
+Pet owners report their lost pets with photos and details. Community members browse the map, and when they spot a lost pet, 
+they submit a sighting with the location. The app plots all sightings on an interactive map so owners
+can track where their pet has been seen.
 
-4. You will need to make use of coordinate data that you store in your database for each
-   pet sighting. Location data (lat/lng) can be generated using a tool such as ChatGPT as
-   demonstrated in lectures and realistic locations and data volumes will earn more marks
+## Features
 
-5. The final client application functionality sophistication and user experience is up to you to
-   work on as long as it meets these main requirements above. E.g. Using JavaScript you
-   can make the user experience particularly smooth and efficient for locating pets by
-   moving the petMap to location when a record is selected from the list of sightings. You do
-   not need to add features outside of the scope above but you are encouraged to deliver
-   well structured OO code.
+- **Pet Management** — Owners can add, update, and delete lost pet listings with photos, species, breed, color, and description.
+- **Sighting Reports** — Users report pet sightings with location (map click or GPS), comment, and address.
+- **Interactive Map** — Leaflet-based map with marker clustering showing all sighting locations. Click a marker to see pet details or submit a new sighting.
+- **Geolocation** — Browser GPS tracking with a blue dot indicator to help users pinpoint their location.
+- **Live Search** — Real-time autocomplete search across pet name, species, breed, color, comment, and address with ranked results.
+- **Filtering & Sorting** — Filter sightings by species, sort by name (A–Z / Z–A) or date (newest/oldest).
+- **User Authentication** — Login with rate limiting (3 attempts, 2-minute cooldown), secure session cookies, and role-based access (Owner vs regular user).
+- **CSRF Protection** — AJAX token validation on all asynchronous requests.
 
-Requirements for Map
-
-1. OO & Design: Cohesive JS/PHP OO architecture with clear patterns and re-use. x
-2. AJAX: 3+ high-quality, efficient endpoints with robust error handling and caching where appropriate. x
-3. Security: Strong input validation, CSRF/URL tokens, output encoding; shows threat-modelling decisions. x
-4. Data: JSON/XML via extended DB classes; clear schemas. x
-5. Map/UX: Highly sophisticated, real-time updates, smooth interactions (e.g., list to petMap focus, clustering),
-   reliable geolocation, fully responsive; scales to 100s of items. x
-6. Comments: Consistent, meaningful, maintainable.
-7. Strictly no prohibited tools; exemplary database usage and performance tuning.
-8. Hosted on poseidon.salford.ac.uk using a MariaDB database
-
-Feature Live Search
-
-1. AJAX implementation of live search feature and results for users (based on material
-   in Workshops 15 & 16) including feature information where appropriate and search
-   filters. Consider browser memory usage. The search feature must be powerful and
-   allow effective narrowing of results to a small number from a large dataset.
-
-Requirements for Live Search
-
-1. OO & Design: Elegant, reusable classes; clear pattern. x
-2. AJAX: Multiple endpoints (3+ if appropriate) enabling sophisticated interactions (e.g., debounced live search with
-   ranking). x
-4. Security: Comprehensive validation and tokenisation; robust input sanitisation. x
-5. Data: JSON/XML contracts; paginated/filtered payloads. x
-6. Performance: Excellent memory and network efficiency for 100s+ items. x
-7. Comments: Consistently excellent. No prohibited tools.
-8. Hosted on poseidon.salford.ac.uk using a MariaDB database
-
-Tech requirments
-
-1. DOM
-2. Eventhandler and listener
-3. SearchValidation
-4. Class & OOP
-5. Ajax
-6. Json
-7. Design pattern
-8. Geolocation API
-9. Caching
-10. Leaflet
-11. Debouncing
-
-poseidon ssh connection:
-terminal command: ssh -L 3306:localhost:3306 sge366@poseidon.salford.ac.uk
-and in database: conect with mariadb pass
-
-db_password="pass"
-run the server:  php -S localhost:8000
-
-File that chaged:
-
-1. ViewSighints.phtml
-2. SightingsMapDataSet.php
-3. createsighting controller
-   source ~/.bashrc
-To Do 
-1. UI fix on entire website 
-2. Comment and review all updated files 
-LiveSearchAjax.js 
-LiveSearchMediatorApp.js
-LiveSearchUI.js  
-SearchValidation.js 
-FetchPetById.php  
-SearchPets.php  
-SearchSuggestions.php
-Geolocation.js  
-MapAndSightingDataValidation.js  
-MapMediatorApp.js  
-PetMap.js  
-SightingList.js  
-SightingsMapAndListAjax.js
-ReverseLatLngToHumanReadableAddress.php  
-SightingsJsonData.php
-ValidateAjaxToken.php
-header.phtml
-createSightings.phtml
-viewSightings.phtml
-createSightings.php
-viewSightings.php
-Model: 
-CreateSightings.php
-SearchSightings.php
-SightingsDataSets.php
-
-3. Host on poseidon
+## Tech Stack
+- Backend: PHP 7.4+, MariaDB 
+- Frontend: JavaScript, Bootstrap 5.2,  Vanilla JS (ES6 modules)
+- Maps: Leaflet 1.9.4, Leaflet MarkerCluster 1.5.3 
+- Geocoding: Nominatim API (reverse geocoding)
