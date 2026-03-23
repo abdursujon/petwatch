@@ -9,6 +9,7 @@ export class SightingsMapAndListAjax {
     this.cachedSightings = null;
   }
 
+
   /**
    * Ajax endpoint one (GET)
    * fetchSightings() fetch all sightings data
@@ -40,6 +41,7 @@ export class SightingsMapAndListAjax {
     };
     xhr.send();
   }
+
 
   /**
    * Ajax endpoint two (POST) - submits a new sighting to CreateSightings.php controller
@@ -81,6 +83,7 @@ export class SightingsMapAndListAjax {
       + '&token=' + ajaxToken
     );
   }
+
 
   /**
    * Ajax endpoint 3 (GET) - converts lat/lng to a human readable address

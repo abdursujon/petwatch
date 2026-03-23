@@ -22,6 +22,7 @@ export class LiveSearchUI {
     this.initListeners();
   }
 
+
   /**
    * Initialise event listeners on the search input.
    * Debouncing is implemented so we don't fire a request on every keystroke.
@@ -44,6 +45,7 @@ export class LiveSearchUI {
     });
   }
 
+
   /**
    * Clears the results container when the mediator app calls this method.
    * The reason is to remove the search result when not needed or invalid.
@@ -52,6 +54,7 @@ export class LiveSearchUI {
     this.resultsContainer.innerHTML = '';
   }
 
+
   /**
    * Clears the input field when the mediator app calls this method.
    * The reason is to reset the search bar after the user clicks a result.
@@ -59,6 +62,7 @@ export class LiveSearchUI {
   clearInput() {
     this.input.value = '';
   }
+
 
   /**
    * Renders autocomplete suggestions dropdown.
@@ -119,6 +123,7 @@ export class LiveSearchUI {
     this.resultsContainer.appendChild(viewAll);
   }
 
+
   /**
    * Renders the full search results with pagination.
    */
@@ -172,6 +177,7 @@ export class LiveSearchUI {
       this.resultsContainer.appendChild(loadMore);
     }
   }
+
 
   /**
    * The next four methods are empty by default and overridden by the mediator app.

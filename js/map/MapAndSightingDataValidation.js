@@ -5,6 +5,7 @@
 export class MapAndSightingDataValidation {
   constructor() {}
 
+
   /**
    * This method aims to prevents XSS (Cross-Site Scripting) attack.
    * If attacker injects malicious script via pet name, comment, or other fields.
@@ -14,6 +15,7 @@ export class MapAndSightingDataValidation {
     if (!str && str !== 0) return '';
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
   }
+
 
   /**
    * This method handles invalid or oversized input
@@ -30,6 +32,7 @@ export class MapAndSightingDataValidation {
     return null;
   }
 
+
   /**
    * This method handles forged location data
    * Meaning if attacker submits impossible coordinates (e.g., lat=9999) to corrupt map data.
@@ -45,6 +48,7 @@ export class MapAndSightingDataValidation {
     return null;
   }
 
+
   /**
    * This method handles parameter tampering
    * If an attacker manipulates pet id to associate sightings with wrong pets or inject values.
@@ -56,4 +60,5 @@ export class MapAndSightingDataValidation {
     }
     return null;
   }
+
 }

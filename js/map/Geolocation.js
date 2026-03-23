@@ -18,6 +18,7 @@ export class Geolocation {
     this.dotMarker = null;
   }
 
+
   /**
    * The method first check if the browser supports geolocation, if not show error.
    * If geolocation is supported, request the position with getCurrentPosition()
@@ -46,6 +47,7 @@ export class Geolocation {
       }
     );
   }
+
 
   /**
    * If geolocation is allowed, this method allow us to tracks the user location as they move.
@@ -76,6 +78,7 @@ export class Geolocation {
       }
     );
   }
+
 
   /**
    * Displays and updates the user's position on the map as blue dot with pulsing ring animation.
@@ -127,6 +130,7 @@ export class Geolocation {
         e.target.closePopup();
       });
   }
+
 
   /**
    * This method helps us stop the GPS tracking started by startTracking() method.

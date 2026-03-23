@@ -26,6 +26,7 @@ class LiveSearchMediatorApp {
     this.liveSearchUi = new LiveSearchUI('live-search-input', 'live-search-results');
   }
 
+
   /**
    * Binds all UI events to the mediator so that communication between
    * LiveSearchUI, LiveSearchAjax, and SearchValidation flows through one app.

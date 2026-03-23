@@ -8,6 +8,7 @@ export class SearchValidation {
     this.maxLength = 100;
   }
 
+
   /**
    * Validates the search query string.
    * Returns sanitised query or null if invalid.
@@ -27,6 +28,7 @@ export class SearchValidation {
     return query;
   }
 
+
   /**
    * Validates species filter value.
    * Only allows known species values.
@@ -36,6 +38,7 @@ export class SearchValidation {
     species = species.toLowerCase().trim();
     return allowed.includes(species) ? species : '';
   }
+
 
   /**
    * Validates status filter value.
@@ -47,6 +50,7 @@ export class SearchValidation {
     return allowed.includes(status) ? status : '';
   }
 
+
   /**
    * Validates page number.
    * Must be a positive integer.
@@ -55,6 +59,7 @@ export class SearchValidation {
     page = parseInt(page);
     return (isNaN(page) || page < 1) ? 1 : page;
   }
+
 
   /**
    * Validates pet ID.

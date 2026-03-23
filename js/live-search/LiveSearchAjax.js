@@ -49,6 +49,7 @@ export class LiveSearchAjax {
     xhr.send();
   }
 
+
   /**
    * Ajax endpoint 2 (GET) — Fetch autocomplete suggestions.
    * Returns only pet names, IDs, species, and photo for the dropdown.
@@ -75,6 +76,7 @@ export class LiveSearchAjax {
     };
     xhr.send();
   }
+
 
   /**
    * Ajax endpoint 3 (GET) — Fetch a single pet's full details by ID.

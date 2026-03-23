@@ -26,6 +26,7 @@ class MapMediatorApp {
     this.sightingList = new SightingList('sighting-container');
   }
 
+
   /**
    * Inialise the pet map and lists feature by loading data and wiring
    * all communication through this central app method.
@@ -144,17 +145,15 @@ class MapMediatorApp {
       this.petMap.enterCreateSightingMode(petId);
     };
 
-    // Start GPS tracking and center map on user location.
-    // Skip this location if routed from live search instead focus on searched pet location.
-    if (!focusPetId) {
-      let hasCentered = false;
-      this.geolocation.startTracking(this.petMap.map, (lat, lng) => {
-        if (!hasCentered) {
-          this.petMap.map.flyTo([lat, lng], 16);
-          hasCentered = true;
-        }
-      });
-    }
+    // Start GPS tracking so select you location button work accordingly
+    // Only auto center on user location if not routed from live search
+    let hasCentered = false;
+    this.geolocation.startTracking(this.petMap.map, (lat, lng) => {
+      if (!hasCentered && !focusPetId) {
+        this.petMap.map.flyTo([lat, lng], 16);
+        hasCentered = true;
+      }
+    });
 
     // Real time update on the map without page reload.
     // If other user create new sighting the marker will show on the map without needing any page reload
