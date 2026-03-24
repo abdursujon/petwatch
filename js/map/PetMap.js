@@ -9,11 +9,7 @@ import {MapAndSightingDataValidation} from './MapAndSightingDataValidation.js';
 export class PetMap {
 
   /**
-   * Constructor initalise the leaflet pet map, with tile layer, marker clustering and UI controls.
-   * @param elementId - HTML element id to render the map into
-   * @param lat - default lat in salford university
-   * @param lng - default long in salford university
-   * @param zoom - intialise zoom level
+   * Constructor initalise the leaflet pet map, with tile layer, marker clustering and UI controls etc.
    */
   constructor(elementId, lat, lng, zoom) {
     this.map = L.map(elementId, {maxZoom: 19}).setView([lat, lng], zoom);
@@ -121,7 +117,6 @@ export class PetMap {
    * On submit, validates comment, coordinates, and pet id.
    * Next it notifies of the change though central app MediatorMap.
    * On cancel, exits sighting mode and restores the map with markers.
-   * @param petId
    */
   enterCreateSightingMode(petId) {
     this.sightingMode = true;

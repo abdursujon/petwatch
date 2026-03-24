@@ -5,9 +5,7 @@ require_once('SightingsDataSets.php');
 require_once('LocationDataSets.php');
 
 /**
- * Data access layer for retrieving and counting pet sightings.
- * Supports filtered, sorted, and paginated queries by joining
- * pets and sightings data and mapping results to SightingsData objects.
+ * This class designed to handle CRUD operation on pet sightings data.
  */
 class CreateSightings
 {
@@ -19,14 +17,7 @@ class CreateSightings
   }
 
   /**
-   * recordSighting in database
-   * @param $petId
-   * @param $userId
-   * @param $comment
-   * @param $latitude
-   * @param $longitude
-   * @return bool
-   * @throws Exception
+   * recordSighting method insertss a new sighting and it's location into database.
    */
   public function recordSighting($petId, $userId, $comment, $latitude, $longitude, $address): bool
   {
@@ -55,6 +46,10 @@ class CreateSightings
     }
   }
 
+
+  /**
+   * Get all lost pet information from the database.
+   */
   public function getAllLostPets(): array
   {
     $sql = "SELECT id, name, species, photo_url FROM pets WHERE status = 'lost' ORDER BY name ASC";
@@ -63,6 +58,10 @@ class CreateSightings
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+
+  /**
+   * Get all sightings by a specific user id.
+   */
   public function getSightingsByUser($userId): array
   {
     try {
@@ -89,6 +88,9 @@ class CreateSightings
     }
   }
 
+  /**
+   * Update sighting when user id match.
+   */
   public function updateSighting($sightingId, $userId, $data): bool
   {
     try {
@@ -125,6 +127,10 @@ class CreateSightings
     }
   }
 
+
+  /**
+   * Delete sightings by user id that has requested delete.
+   */
   public function deleteSighting($sightingId, $userId): bool
   {
     try {
@@ -142,7 +148,6 @@ class CreateSightings
         return false;
       }
 
-      // Delete locations FIRST (child), then sighting (parent)
       $delLoc = $this->_dbHandle->prepare(
         "DELETE FROM locations WHERE sighting_id = :sighting_id"
       );

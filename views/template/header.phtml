@@ -9,7 +9,7 @@ require_once(__DIR__ . '/../../models/Database.php')
 
 <script>
   /**
-   * Generate a random 20 character string used as CSRF token and store it in the session.
+   * The script generate a random 20 character string used as CSRF token and store it in the session.
    * Then expose the token to JS so AJAX can send it for verification.
    * @type {string}
    */
@@ -161,6 +161,7 @@ require_once(__DIR__ . '/../../models/Database.php')
       </div>
     </nav>
   </header>
+
   <!-- Live search app wired in header which makes it avaiable across all pages in the website. -->
   <script type="module" src="js/live-search/LiveSearchMediatorApp.js"></script>
   <main class="flex-shrink-0">

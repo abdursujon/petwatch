@@ -2,11 +2,6 @@
 require_once('Database.php');
 require_once('LocationData.php');
 
-/**
- * Provides persistence logic for pet location records.
- * Responsible for inserting and synchronizing location data
- * derived from pet sightings into the locations table.
- */
 class LocationDataSet
 {
   private $_dbHandle;

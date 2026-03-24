@@ -28,7 +28,6 @@ main > .container {
     box-shadow: 0 4px 15px rgba(9, 8, 8, 0.4);
 }
 
-/* ==========: Header custom css :===============*/
 
 /* Set the logo to desirable style */
 .logo {
@@ -76,7 +75,6 @@ main > .container {
 }
 
 
-/* ==========: Custom css for hero section :=========== */
 .hero-section {
     background: linear-gradient(135deg, #343a40 0%, #495057 100%);
     color: white;
@@ -419,7 +417,6 @@ main > .container {
 }
 
 
-/* =============: Media Query for small and medium devices :============= */
 @media (max-width: 768px) {
 
     .login-btn {
@@ -482,7 +479,6 @@ main > .container {
 }
 
 
-/* ===============: Media query for lg and bigger devices :=================== */
 @media (min-width: 992px) {
 
     .user-details {

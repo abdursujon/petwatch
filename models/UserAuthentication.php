@@ -2,11 +2,6 @@
 require_once('Database.php');
 require_once('UserData.php');
 
-/**
- * Handles user authentication and password management.
- * Verifies login credentials against stored password hashes
- * and supports rehashing and updating user passwords by role.
- */
 class UserAuthentication
 {
   private $_dbHandle;

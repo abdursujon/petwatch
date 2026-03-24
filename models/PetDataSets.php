@@ -2,11 +2,6 @@
 require_once('Database.php');
 require_once('PetData.php');
 
-/**
- * Data access layer for pet records.
- * Provides CRUD operations for pets and maps database rows
- * to PetData objects using a shared database connection.
- */
 class PetDataSets
 {
   public $_dbHandle;

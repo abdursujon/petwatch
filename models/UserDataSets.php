@@ -2,11 +2,6 @@
 require_once('Database.php');
 require_once('UserData.php');
 
-/**
- * Data access layer for user records.
- * Provides methods for retrieving user information from the database
- * and mapping results to UserData objects via a shared database connection.
- */
 class UserDataSet
 {
   protected $_dbHandle, $_dbInstance;

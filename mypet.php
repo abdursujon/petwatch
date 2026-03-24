@@ -18,10 +18,6 @@ $view->title = "My Pets";
 $view->successMessage = '';
 $view->errorMessage = '';
 
-/**
- * Validates and sanitizes pet form input.
- * Returns sanitized values and validation errors.
- */
 function validateMypetData($input): array
 {
   $name = trim($input['name'] ?? '');
@@ -48,9 +44,7 @@ function validateMypetData($input): array
   return [$name, $breed, $color, $description, $errors];
 }
 
-/**
- * Handles pet image upload and returns stored path.
- */
+
 function handlePetPhotoUpload(string $fieldName): ?string
 {
   if (!isset($_FILES[$fieldName]) ||

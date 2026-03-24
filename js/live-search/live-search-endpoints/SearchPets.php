@@ -3,9 +3,6 @@
  * The endpoint first validates the AJAX token, then returns search suggestions as JSON for the live search autocomplete.
  * <p>
  *  Suggestion query must be one valid character.
- *  Afterwards, the query is validated again.
- * </p>
- * <p>
  *  An instance of SearchSightings is created, which calls its fetchSuggestions
  *  method to return matching suggestions.
  * </p>

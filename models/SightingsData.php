@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Data model representing a pet sighting record.
- * Encapsulates sighting-related attributes loaded from the database
- * and provides read-only access to pet and location details.
- */
 class SightingsData
 {
   protected $_pet_name, $_pet_species, $_pet_status,

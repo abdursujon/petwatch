@@ -1,10 +1,6 @@
 <?php
 $lifetime = 3600;
 
-/**
- * Secure session configuration.
- * Sets cookie lifetime, scope, HTTPS-only, HttpOnly, and SameSite policy.
- */
 session_set_cookie_params([
   'lifetime' => $lifetime,
   'path' => '/',
@@ -29,10 +25,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
   $view->successMessage = 'You have been logged out successfully.';
 }
 
-/**
- * Login rate limiting.
- * Allows 3 failed attempts, then enforces a 2-minute cooldown.
- */
+
 if (!isset($_SESSION['login_attempts'])) {
   $_SESSION['login_attempts'] = 0;
   $_SESSION['last_attempt_time'] = time();

@@ -1,14 +1,14 @@
 <?php
-
 /**
- * Singleton database connection manager.
- * Establishes and provides a shared PDO connection to the petwatch SQLite database.
+ * Connect Poseidon MariaDB database.
+ * Secure connection to the petwatch database hosted on University Server.
  */
 class Database
 {
   protected static $_dbInstance = null;
   protected $_dbHandle;
 
+  // Ensures that only one database connection exists througout the app.
   public static function getInstance()
   {
     if (self::$_dbInstance === null) {
@@ -17,6 +17,8 @@ class Database
     return self::$_dbInstance;
   }
 
+
+  // Database connection with poseidon MariaDB.
   private function __construct()
   {
     try {

@@ -2,9 +2,8 @@
 require_once('models/UserAuthentication.php');
 
 /**
- * One-time password hashing utility.
- * Rehashes all user passwords in the database using fixed
- * credentials for Owners and Users (testing/setup only).
+ * This controller helps us hash all user and owner password to the database.
+ * When run from the browser, or terminal, this script updates all hashing for all type of user.
  */
 $userAuthentication = new UserAuthentication();
 $rows = $userAuthentication->hasUserPassword(

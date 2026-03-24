@@ -2,10 +2,7 @@
 /**
  * The endpoint first validate the AJAX token
  * Next it returns search suggestions as JSON for the live search autocomplete.
- * Suggestion query must be one valid characters.
- * Afterwards, the query is validated again.
- * Next an instance of SearchSightings is created, which calls its fetchSuggestions
- * method to return matching suggestions.
+ * The file calls SearchSightings method fetchSuggestions() to return matching suggestions.
  */
 require_once(__DIR__ . '/../../ValidateAjaxToken.php');
 validateAjaxToken();

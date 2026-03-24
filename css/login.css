@@ -1,4 +1,4 @@
-/* ======: Custom CSS for login form :========= */
+/* Custom CSS for login form */
 .login-form {
     padding-top: 80px;
     margin-top: 120px;
@@ -21,7 +21,6 @@
 }
 
 
-/* =============: Custom CSS for logout form and welcome message :============ */
 .welcome-card {
     background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
     border-radius: 15px;
@@ -60,7 +59,7 @@
     margin-top: 120px;
 }
 
-/* ==========: Custom css for quick links on welcome card :========== */
+
 .quick-links {
     display: flex;
     gap: 15px;

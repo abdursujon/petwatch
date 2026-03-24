@@ -12,13 +12,7 @@ class SearchSightings
 
   /**
    * Search pets by name, breed, species, colour, or address.
-   * Results are ranked: exact match first, starts with second, contains third.
-   * @param string $query
-   * @param string $species
-   * @param string $status
-   * @param int $limit
-   * @param int $offset
-   * @return array
+   * Results are ranked accordingly with exact match first, starts with second, contains third.
    */
   public function search($query, $species = '', $status = '', $limit = 10, $offset = 0): array
   {
@@ -106,9 +100,6 @@ class SearchSightings
   /**
    * Fetch suggestions for autocomplete.
    * Returns only pet names and IDs matching the query.
-   * @param string $query
-   * @param int $limit
-   * @return array
    */
   public function fetchSuggestions($query, $limit = 5): array
   {
@@ -148,8 +139,6 @@ class SearchSightings
 
   /**
    * Fetch a single pet's full details by ID.
-   * @param int $petId
-   * @return array|null
    */
   public function fetchPetById($petId): ?array
   {

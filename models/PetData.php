@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Data model representing a single pet record.
- * Encapsulates pet attributes loaded from the database and
- * provides read-only access to pet-related data.
- */
 class PetData
 {
   protected $_id, $_name, $_species, $_breed, $_color,

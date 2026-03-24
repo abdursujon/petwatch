@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Data model representing a single user record.
- * Encapsulates user attributes loaded from the database and
- * provides read-only access to authentication and identity data.
- */
 class UserData
 {
   protected $_id, $_username, $_email,

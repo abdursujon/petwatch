@@ -140,7 +140,6 @@
     margin: -5px auto 0;
 }
 
-
 /* Custom css for sighting panel for device width smaller than < 1280px (smaller than large) */
 @media (max-width: 1279px) {
     #sighting-panel {

@@ -25,11 +25,3 @@ can track where their pet has been seen.
 - Maps: Leaflet 1.9.4, Leaflet MarkerCluster 1.5.3 
 - Geocoding: Nominatim API (reverse geocoding)
 
-  The geolocation feature works as intended on localhost and HTTPS environments. On the university's Poseidon server, the browser blocks navigator.geolocation entirely because the site is served over HTTP, which modern         
-  browsers treat as insecure. This is a server configuration limitation, not a code issue. An IP-based fallback with a consent prompt was implemented as a workaround. 
-
-Hi Lee, geolocation is blocked on all browsers for Poseidon-hosted sites because it runs on HTTP, not HTTPS. 
-It works fine on localhost but on Poseidon users can't even choose to allow location. How should we approach this
-since it's not something we can control?
-
-So would you test it on local host for geolocation for marking? Cause my geocode works fine on localhost. 

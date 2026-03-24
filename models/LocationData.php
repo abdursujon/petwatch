@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Data model representing a single location record.
- * Encapsulates location attributes associated with a pet sighting
- * and provides read-only access to persisted location data.
- */
 class LocationData
 {
   protected $_id, $_pet_id, $_latitude, $_longitude, $_timestamp;

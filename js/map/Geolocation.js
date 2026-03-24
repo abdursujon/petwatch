@@ -24,8 +24,6 @@ export class Geolocation {
    * If geolocation is supported, request the position with getCurrentPosition()
    * If successfull, passess the lat/lng to onSuccess()
    * On failure, calls onError()
-   * @param onSuccess
-   * @param onError
    */
   locate(onSuccess, onError) {
     if (!navigator.geolocation) {
@@ -54,8 +52,6 @@ export class Geolocation {
    * watchPosition() fires for every time device detects a change in position.
    * Each update stores the new lat/lng, moves the blue dot on the map via showUserLocation().
    * The returned id is saved to this.watchId so stopTracking() method can cancel it later.
-   * @param map
-   * @param onUpdate
    */
   startTracking(map, onUpdate) {
     if (!navigator.geolocation) return;
@@ -85,9 +81,6 @@ export class Geolocation {
    * On initial call, it creats both markers and adds a hover popup.
    * The hover popup shows a message (Your location) when user interact with it.
    * On additional calls, it moves the existing geolocation marker to the new position without creating new one.
-   * @param map
-   * @param lat
-   * @param lng
    */
   showUserLocation(map, lat, lng) {
     let latlng = [lat, lng];

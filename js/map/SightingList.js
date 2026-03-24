@@ -109,8 +109,8 @@ export class SightingList {
               <span class="badge ${pet.status === 'lost' ? 'bg-danger' : 'bg-success'}">${MapAndSightingDataValidation.escapeHTML(pet.status)}</span>
           </div>
           <p class="card-text text-muted mb-1"><small>Breed: ${MapAndSightingDataValidation.escapeHTML(pet.breed)}</small></p>
-          <p class="card-text mb-1">"${MapAndSightingDataValidation.escapeHTML(pet.comment)}"</p>
-          <p class="card-text mt-auto"><small class="text-muted">Location: <span class="sighting-address">Loading...</span></small></p>
+          <p class="card-text mb-3 fst-italic bg-light rounded-2 p-2" style="border-left: 3px solid #198754;">"${MapAndSightingDataValidation.escapeHTML(pet.comment)}"</p>
+          <p class="card-text mt-auto mt-5"><small class="text-muted"> 📍 Location: <span class="sighting-address">Loading...</span></small></p>
           ${isLoggedIn ? `
           <button class="btn btn-primary btn-sm py-1 w-75 add-sighting-btn mt-1 mb-4 text-start" style="font-size: 16px;" data-pet-id="${MapAndSightingDataValidation.escapeHTML(pet.id)}">Add A New Sighting</button>
           ` : '<p class="text-muted mb-4"><small>Log in to add a sighting</small></p>'}

@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 
 /**
  * Handles form-based POST actions for sightings page.
- * Calls for right model based on the submit action by the user.
+ * Calls for right form based on the submit action by the user.
  * <p>
  *  submit_sighting: create a new sighting record with validated location data.
  *  update_sighting: modifies an existing sightings.

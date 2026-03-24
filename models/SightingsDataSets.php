@@ -4,9 +4,8 @@ require_once('SightingsData.php');
 require_once('LocationDataSets.php');
 
 /**
- * Data access layer for retrieving and counting pet sightings.
- * Supports filtered, sorted, and paginated queries by joining
- * pets and sightings data and mapping results to SightingsData objects.
+ * This class is designed to support data access layer for retrieving and counting pet sightings.
+ * It also handles filtered, sorting, and pagination queries by joining relevant table.
  */
 class SightingsDataSets
 {
@@ -18,22 +17,16 @@ class SightingsDataSets
   }
 
   /**
-   * fetchAllSightings method returns json_encoded data for front end to use purpose.
-   * <p>
-   *     1. Join pets with location and sightings table to get required pets data for ajax live-search-endpoints
-   *     2. Execute the query to get pet details and sightings.
-   *     3. Create an array variable to store executed data in while loop.
-   *     4. Echo the dataSet as json so front end can use the data.
-   * </p>
+   * fetchAllSightings method returns json_encoded data which we use in front end.
    * @return array
    */
   public function fetchAllSightings()
   {
     $sqlQuery = "SELECT pets.*, l.latitude, l.longitude, l.timestamp, l.address,                                                                                                                                                      
                       s.comment, s.user_id, s.pet_id                                                                                                                                                                                
-               FROM pets
-               INNER JOIN sightings s ON pets.id = s.pet_id                                                                                                                                                                         
-               INNER JOIN locations l ON l.sighting_id = s.id";
+                 FROM pets
+                 INNER JOIN sightings s ON pets.id = s.pet_id                                                                                                                                                                         
+                 INNER JOIN locations l ON l.sighting_id = s.id";
 
     $statement = $this->_dbHandle->prepare($sqlQuery);
     $statement->execute();
