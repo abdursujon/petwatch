@@ -1,4 +1,4 @@
-# PetWatch: Community Lost-Pet Tracker (PHP · MariaDB · Leaflet)
+# PetWatch: Community Lost-Pet Tracker
 
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
 [![MariaDB](https://img.shields.io/badge/MariaDB-10.4%2B-003545?logo=mariadb&logoColor=white)](https://mariadb.org/)
