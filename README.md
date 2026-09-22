@@ -72,4 +72,3 @@ on an interactive map so owners can track where their pet has been seen.
 1. `LiveSearchUI.js` debounces keystrokes and calls `SearchSuggestions.php` for ranked suggestions.
 2. Choosing a suggestion calls `FetchPetById.php`; typing a full query calls `SearchPets.php`, which paginates with `LIMIT`/`OFFSET` for infinite scroll.
 
----
